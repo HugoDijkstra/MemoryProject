@@ -10,33 +10,27 @@ using System.Windows.Forms;
 
 namespace NewMemoryGame
 {
-    public partial class Form1 : Form
+    public partial class Game : Form
     {
 
-        public List<Image> buttons;
+        public List<Card> cards;
 
-        public Form1()
+        public Game()
         {
             InitializeComponent();
             LoadButtons(5, 5);
-
         }
 
         public void LoadButtons(int x, int y)
         {
-            buttons = new List<Image>();
+            cards = new List<Card>();
             for(int i = 0; i < x; i++)
             {
                 for(int j = 0;j < y; j++)
                 {
-                    Image image = Image.;
+                   
                 }
             }
-        }
-
-        private void CheckButton(object sender, EventArgs e)
-        {
-            sender.ToString();
         }
 
         private void Form1_Load(object sender, EventArgs e)
