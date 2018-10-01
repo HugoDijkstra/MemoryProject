@@ -34,7 +34,7 @@ namespace MemoryProjectFull
             Width = snugContentWidth + 2 * verticalBorderWidth;
             Height = snugContentHeight + captionHeight + 2 * horizontalBorderHeight;
 
-            GamePanel gamePanel = new GamePanel(5, 3, 200, 300);
+            GamePanel gamePanel = new GamePanel(5, 3, 200, 1000);
             this.AddChild(gamePanel);
         }
     }

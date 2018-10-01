@@ -98,7 +98,6 @@ namespace MemoryProjectFull
                 {
                     this.RowDefinitions.Add(new RowDefinition());
                     Card c = cards[i, j];
-                    c.Margin = new Thickness(10);
                     Grid.SetColumn(c, i);
                     Grid.SetRow(c, j);
                     Children.Add(c);
@@ -156,12 +155,12 @@ namespace MemoryProjectFull
         {
             cards = new Card[x, y];
             List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, 200);
+
             int image = 0;
             for (int i = 0; i < x; i++)
             {
                 for (int j = 0; j < y; j++)
                 {
-                    Image im = new Image();
                     Card card = new Card(image, new Size(200, 300), new Point(0, 0), bitmapImages[image]);
                     cards[i, j] = card;
                 }
@@ -172,15 +171,17 @@ namespace MemoryProjectFull
         {
             cards = new Card[x, y];
             List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, cardSizeY);
-            int image = 0;
+            int image = 1;
             for (int i = 0; i < x; i++)
             {
                 for (int j = 0; j < y; j++)
                 {
                     Card card = new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]);
+                    image++;
                     cards[i, j] = card;
                 }
             }
+            Card.BackImage = bitmapImages[0];
             Build(cards, x, y, cardSizeX, cardSizeY);
         }
     }

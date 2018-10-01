@@ -8,7 +8,7 @@ using System.Windows.Threading;
 
 namespace MemoryProjectFull
 {
-
+    [Serializable]
     public sealed class Card : Control
     {
 
@@ -214,7 +214,6 @@ namespace MemoryProjectFull
             set
             {
                 back = value.Clone();
-                back.Freeze();
             }
         }
 

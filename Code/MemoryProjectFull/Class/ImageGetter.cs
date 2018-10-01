@@ -57,7 +57,7 @@ namespace MemoryProjectFull
                 }
                 File.WriteAllText("html.html", html);
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine(e);
             }
@@ -66,7 +66,8 @@ namespace MemoryProjectFull
 
         private static BitmapImage GetImageFromWeb(string url, int decodeWidth)
         {
-
+            if (!url.Contains("http"))
+                return null;
             BitmapImage bitmap = new BitmapImage();
             try
             {
