@@ -12,47 +12,96 @@ using System.Windows.Media.Imaging;
 
 namespace MemoryProjectFull
 {
-    public partial class Card : Control { public Image image; }
     class GamePanel : Grid
     {
-        public GamePanel()
-        {
-            Run();
-        }
-
-        public GamePanel(int widht, int height)
-        {
-            Run();
-        }
 
         bool firstCardClicked;
 
         OnClickDoneArgs doneArgs;
 
-        public void Build(List<Card> cards, int xAmount, int yAmount)
+        Card[,] cards;
+        public GamePanel()
+        {
+            Run(4, 4);
+        }
+
+        /// <summary>
+        /// GamePanel Constructor FOR DEBUGGING PURPOSE
+        /// </summary>
+        /// <param name="widht"></param>
+        /// <param name="height"></param>
+        public GamePanel(int widht, int height)
+        {
+            Run(widht, height);
+        }
+
+        /// <summary>
+        /// Constructor for the gamepanel that that creates the card and grid with set parameters
+        /// </summary>
+        /// <param name="widht">Amount of cards in the x axis</param>
+        /// <param name="height">Amount of cards in the y axis</param>
+        /// <param name="carSizeX">Size of the cards in the x axis</param>
+        /// <param name="carSizeY">Size of the cards in the y axis</param>
+        public GamePanel(int widht, int height, int carSizeX, int carSizeY)
+        {
+            Run(widht, height, carSizeX, carSizeY);
+        }
+
+        public void Build(Card[,] cards, int xAmount, int yAmount)
         {
             //Cards.Count() needs to be more or equale too (x * y)
-            if (cards.Count() < xAmount * yAmount)
+            if (cards.Length < xAmount * yAmount)
             {
                 Console.WriteLine("Cards.Count() needs to be more or equale too (x * y)");
                 return;
             }
 
-            Width = 400 * xAmount;
-            Height = 400 * yAmount;
+            Width = 200 * xAmount;
+            Height = 250 * yAmount;
 
-            int k = 0;
+            VerticalAlignment = VerticalAlignment.Center;
             for (int i = 0; i < xAmount; i++)
             {
                 this.RowDefinitions.Add(new RowDefinition());
                 for (int j = 0; j < yAmount; j++)
                 {
                     this.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-                    k++;
-                    Card c = cards[k];
-                    Grid.SetColumn(c.image, j);
-                    Grid.SetRow(c.image, i);
-                    Children.Add(c.image);
+                    Card c = cards[i, j];
+                    c.Margin = new Thickness(10);
+                    Border border = new Border();
+                    border.Child = c;
+                    Grid.SetColumn(((Card)(border.Child)), i);
+                    Grid.SetRow(((Card)(border.Child)), j);
+                    Children.Add(((Card)(border.Child)));
+                }
+            }
+            doneArgs = new OnClickDoneArgs();
+            firstCardClicked = false;
+        }
+
+        public void Build(Card[,] cards, int xAmount, int yAmount, int carSizeX, int carSizeY)
+        {
+            //Cards.Count() needs to be more or equale too (x * y)
+            if (cards.Length < xAmount * yAmount)
+            {
+                Console.WriteLine("Cards.Count() needs to be more or equale too (x * y)");
+                return;
+            }
+
+            Width = (carSizeX + 10) * xAmount;
+            Height = (carSizeY + 10) * yAmount;
+
+            for (int i = 0; i < xAmount; i++)
+            {
+                this.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+                for (int j = 0; j < yAmount; j++)
+                {
+                    this.RowDefinitions.Add(new RowDefinition());
+                    Card c = cards[i, j];
+                    c.Margin = new Thickness(10);
+                    Grid.SetColumn(c, i);
+                    Grid.SetRow(c, j);
+                    Children.Add(c);
                 }
             }
             doneArgs = new OnClickDoneArgs();
@@ -103,28 +152,36 @@ namespace MemoryProjectFull
 
         public event EventHandler<OnClickDoneArgs> onClickDone;
 
-        public void Run()
+        public void Run(int x, int y)
         {
-            List<Card> cards = new List<Card>();
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", 30, 400);
-            for (int i = 0; i < bitmapImages.Count; i++)
+            cards = new Card[x, y];
+            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, 200);
+            int image = 0;
+            for (int i = 0; i < x; i++)
             {
-                Image im = new Image();
-                im.BeginInit();
-                im.Source = bitmapImages[i];
-                im.MaxHeight = 400;
-                im.MaxHeight = 400;
-                im.Stretch = Stretch.Fill;
-                im.Width = 200;
-                im.EndInit();
-                Card card = new Card() { image = im };
-                cards.Add(card);
+                for (int j = 0; j < y; j++)
+                {
+                    Image im = new Image();
+                    Card card = new Card(image, new Size(200, 300), new Point(0, 0), bitmapImages[image]);
+                    cards[i, j] = card;
+                }
             }
-            Build(cards, 8, 8);
+            Build(cards, x, y);
         }
-    }
-    partial class Card
-    {
-
+        public void Run(int x, int y, int cardSizeX, int cardSizeY)
+        {
+            cards = new Card[x, y];
+            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, cardSizeY);
+            int image = 0;
+            for (int i = 0; i < x; i++)
+            {
+                for (int j = 0; j < y; j++)
+                {
+                    Card card = new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]);
+                    cards[i, j] = card;
+                }
+            }
+            Build(cards, x, y, cardSizeX, cardSizeY);
+        }
     }
 }

@@ -23,7 +23,18 @@ namespace MemoryProjectFull
         public MainWindow()
         {
             InitializeComponent();
-            GamePanel gamePanel = new GamePanel();
+
+            const int snugContentWidth = 1300;
+            const int snugContentHeight = 700;
+
+            var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
+            var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
+            var captionHeight = SystemParameters.CaptionHeight;
+
+            Width = snugContentWidth + 2 * verticalBorderWidth;
+            Height = snugContentHeight + captionHeight + 2 * horizontalBorderHeight;
+
+            GamePanel gamePanel = new GamePanel(5, 3, 200, 300);
             this.AddChild(gamePanel);
         }
     }

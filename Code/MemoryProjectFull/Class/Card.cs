@@ -128,7 +128,6 @@ namespace MemoryProjectFull
 
             this.cid = id;
             this.front = frontImage.Clone();
-            this.front.Freeze();
 
             this.revealed = false;
             this.animator = new Animator(this);
