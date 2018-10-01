@@ -62,8 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Stats.cs" />
-    <Compile Include="StatsManager.cs" />
+    <Compile Include="Class\NetworkManager.cs" />
+    <Compile Include="Class\Stats.cs" />
+    <Compile Include="Class\StatsManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
