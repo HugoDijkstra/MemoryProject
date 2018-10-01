@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace MemoryProject
+namespace MemoryProjectFull
 {
     public partial class Card : Control { public Image image; }
     class GamePanel : Grid
@@ -19,6 +19,15 @@ namespace MemoryProject
         {
             Run();
         }
+
+        public GamePanel(int widht, int height)
+        {
+            Run();
+        }
+
+        bool firstCardClicked;
+
+        OnClickDoneArgs doneArgs;
 
         public void Build(List<Card> cards, int xAmount, int yAmount)
         {
@@ -29,8 +38,8 @@ namespace MemoryProject
                 return;
             }
 
-            Width = 1500 * xAmount;
-            Height = 300 * yAmount;
+            Width = 400 * xAmount;
+            Height = 400 * yAmount;
 
             int k = 0;
             for (int i = 0; i < xAmount; i++)
@@ -38,26 +47,72 @@ namespace MemoryProject
                 this.RowDefinitions.Add(new RowDefinition());
                 for (int j = 0; j < yAmount; j++)
                 {
-                    this.ColumnDefinitions.Add(new ColumnDefinition());
+                    this.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
                     k++;
                     Card c = cards[k];
-                    Console.WriteLine(c.image.Source);
                     Grid.SetColumn(c.image, j);
                     Grid.SetRow(c.image, i);
                     Children.Add(c.image);
                 }
             }
+            doneArgs = new OnClickDoneArgs();
+            firstCardClicked = false;
         }
+
+        public void Activate()
+        {
+
+        }
+
+        public void Deactivate()
+        {
+
+        }
+
+        private void CardClicked(Card c)
+        {
+            if (!firstCardClicked)
+            {
+                doneArgs.firstCard = c;
+            }
+            else
+            {
+                doneArgs.secondCard = c;
+                doneArgs.Correct = (doneArgs.firstCard == c);
+
+                OnClickDone(doneArgs);
+
+            }
+        }
+
+        protected virtual void OnClickDone(OnClickDoneArgs e)
+        {
+            EventHandler<OnClickDoneArgs> eventHandler = onClickDone;
+            if (eventHandler != null)
+            {
+                eventHandler(this, e);
+            }
+        }
+
+        public class OnClickDoneArgs : EventArgs
+        {
+            public Card firstCard;
+            public Card secondCard;
+            public bool Correct;
+        }
+
+        public event EventHandler<OnClickDoneArgs> onClickDone;
 
         public void Run()
         {
             List<Card> cards = new List<Card>();
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("weed ", 30, 400);
+            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", 30, 400);
             for (int i = 0; i < bitmapImages.Count; i++)
             {
                 Image im = new Image();
                 im.BeginInit();
                 im.Source = bitmapImages[i];
+                im.MaxHeight = 400;
                 im.MaxHeight = 400;
                 im.Stretch = Stretch.Fill;
                 im.Width = 200;

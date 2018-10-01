@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Jil;
 
-using Database = System.Collections.Generic.Dictionary<string, MemoryProject.Stats>;
+using Database = System.Collections.Generic.Dictionary<string, MemoryProjectFull.Stats>;
 
-namespace MemoryProject
+namespace MemoryProjectFull
 {
 
     public class StatsManager

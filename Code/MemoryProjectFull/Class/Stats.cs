@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoryProject
+namespace MemoryProjectFull
 {
 
     public class Stats

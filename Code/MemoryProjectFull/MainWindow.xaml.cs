@@ -23,6 +23,8 @@ namespace MemoryProjectFull
         public MainWindow()
         {
             InitializeComponent();
+            GamePanel gamePanel = new GamePanel();
+            this.AddChild(gamePanel);
         }
     }
 }
