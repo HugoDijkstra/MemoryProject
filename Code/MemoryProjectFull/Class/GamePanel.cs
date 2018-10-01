@@ -42,9 +42,9 @@ namespace MemoryProjectFull
         /// <param name="height">Amount of cards in the y axis</param>
         /// <param name="carSizeX">Size of the cards in the x axis</param>
         /// <param name="carSizeY">Size of the cards in the y axis</param>
-        public GamePanel(int widht, int height, int carSizeX, int carSizeY)
+        public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
-            Run(widht, height, carSizeX, carSizeY);
+            Run(widht, height, carSizeX, carSizeY, theme);
         }
 
         public void Build(Card[,] cards, int xAmount, int yAmount)
@@ -167,10 +167,10 @@ namespace MemoryProjectFull
             }
             Build(cards, x, y);
         }
-        public void Run(int x, int y, int cardSizeX, int cardSizeY)
+        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
         {
             cards = new Card[x, y];
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, cardSizeY);
+            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeY);
             int image = 1;
             for (int i = 0; i < x; i++)
             {
