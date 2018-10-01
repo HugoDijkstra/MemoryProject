@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Class\Card.cs" />
     <Compile Include="Class\GamePanel.cs" />
     <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\NetworkManager.cs" />
