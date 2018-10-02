@@ -120,6 +120,8 @@ namespace MemoryProjectFull
 
         public Card(long id, Size size, Point position, ImageSource frontImage)
         {
+            if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card");
+
             this.Margin = new Thickness(position.X, position.Y, 0, 0);
             this.Width = size.Width;
             this.Height = size.Height;
@@ -220,7 +222,7 @@ namespace MemoryProjectFull
         private readonly long cid;
 
         private ImageSource front;
-        private static ImageSource back;
+        private static ImageSource back = null;
 
         private bool revealed;
         private Animator animator;
