@@ -17,6 +17,8 @@ namespace MemoryProjectFull
         private class Animator
         {
 
+            private enum Motion { COUNTERCLOCKWISE, CLOCKWISE }
+
             private const uint max_rotation = 180;
             private const uint mid_rotation = 90;
             private const uint min_rotation = 0;
@@ -32,6 +34,7 @@ namespace MemoryProjectFull
                 this.timer = new DispatcherTimer(DispatcherPriority.Send);
                 this.updatePending = false;
                 this.rotation = min_rotation;
+                this.motion = Motion.COUNTERCLOCKWISE;
 
                 timer.Interval = new TimeSpan(0, 0, 0, 0, (int) Math.Round(duration / frames));
                 timer.Tick += new EventHandler(UpdateAnimation);
@@ -49,6 +52,11 @@ namespace MemoryProjectFull
             public bool IsAnimating()
             {
                 return timer.IsEnabled;
+            }
+
+            public void ReverseMotion()
+            {
+                this.motion = (this.motion == Motion.COUNTERCLOCKWISE) ? Motion.CLOCKWISE : Motion.COUNTERCLOCKWISE;
             }
 
             public void Stop()
@@ -74,16 +82,14 @@ namespace MemoryProjectFull
 
             private void UpdateAnimation(object o, EventArgs e)
             {
-                rotation += step;
-
-                if (rotation == mid_rotation)
+                switch(motion)
                 {
-                    card.Swap();
-                }
-                else if (rotation >= max_rotation)
-                {
-                    rotation = min_rotation;
-                    this.Stop();
+                    case Motion.COUNTERCLOCKWISE:
+                        RotateCounterclockwise();
+                        break;
+                    case Motion.CLOCKWISE:
+                        RotateClockwise();
+                        break;
                 }
 
                 if (!updatePending)
@@ -93,12 +99,47 @@ namespace MemoryProjectFull
                 }
             }
 
+            private void RotateCounterclockwise()
+            {
+                if (rotation == mid_rotation)
+                {
+                    card.Swap();
+                }
+                else if (rotation >= max_rotation)
+                {
+                    this.Stop();
+                    motion = Motion.CLOCKWISE;
+
+                    return;
+                }
+
+                rotation += step;
+            }
+
+            private void RotateClockwise()
+            {
+                if (rotation == mid_rotation)
+                {
+                    card.Swap();
+                }
+                else if (rotation == min_rotation)
+                {
+                    this.Stop();
+                    motion = Motion.COUNTERCLOCKWISE;
+
+                    return;
+                }
+
+                rotation -= step;
+            }
+
             private Card card;
 
             private DispatcherTimer timer;
 
             private bool updatePending;
             private uint rotation;
+            private Motion motion;
 
             private static readonly double[] cosines = ProduceCosines();
             private static double[] ProduceCosines()
@@ -137,7 +178,13 @@ namespace MemoryProjectFull
 
         public void Flip()
         {
-            animator.Start();
+            if (!IsFlipping())
+            {
+                animator.Start();
+            } else
+            {
+                animator.ReverseMotion();
+            }
         }
 
         public bool IsFlipping()
