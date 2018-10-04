@@ -225,7 +225,6 @@ namespace MemoryProjectFull
         private bool revealed;
         private Animator animator;
 
-        private static OnClickCallback callback = DefaultCallback;
-
+        public static OnClickCallback callback = DefaultCallback;
     }
 }

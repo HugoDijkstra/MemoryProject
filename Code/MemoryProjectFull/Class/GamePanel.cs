@@ -44,7 +44,19 @@ namespace MemoryProjectFull
         /// <param name="carSizeY">Size of the cards in the y axis</param>
         public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
+            Card.callback = HandleCallback;
             Run(widht, height, carSizeX, carSizeY, theme);
+        }
+
+        ~GamePanel()
+        {
+            Card.callback = null;
+        }
+
+        private void HandleCallback(Card c)
+        {
+            c.Flip();
+            CardClicked(c);
         }
 
         public void Build(Card[,] cards, int xAmount, int yAmount)
@@ -122,14 +134,25 @@ namespace MemoryProjectFull
             if (!firstCardClicked)
             {
                 doneArgs.firstCard = c;
+                firstCardClicked = true;
             }
             else
             {
                 doneArgs.secondCard = c;
-                doneArgs.Correct = (doneArgs.firstCard == c);
-
+                doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
+                if (doneArgs.Correct)
+                {
+                    Children.Remove(doneArgs.firstCard);
+                    Children.Remove(doneArgs.secondCard);
+                }
+                else
+                {
+                    doneArgs.firstCard.Flip();
+                    doneArgs.secondCard.Flip();
+                }
                 OnClickDone(doneArgs);
-
+                doneArgs = new OnClickDoneArgs();
+                firstCardClicked = false;
             }
         }
 
@@ -170,19 +193,54 @@ namespace MemoryProjectFull
         public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
         {
             cards = new Card[x, y];
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeY);
+            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeX);
             int image = 1;
+            List<Card> cardEntries = new List<Card>();
+            for (int i = 0; i < (x * y) / 2; i++)
+            {
+                cardEntries.Add(new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]));
+                cardEntries.Add(new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]));
+                image++;
+            }
+            Card.BackImage = bitmapImages[0];
+            List<int> cardOrder = new List<int>();
+
+            for (int i = 0; i < cardEntries.Count; i++)
+            {
+                cardOrder.Add(i);
+            }
+            Console.WriteLine(cardOrder.Count);
+
+            ExtensionMethods.Shuffle(cardOrder);
+
+            int index = 0;
             for (int i = 0; i < x; i++)
             {
                 for (int j = 0; j < y; j++)
                 {
-                    Card card = new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]);
-                    image++;
-                    cards[i, j] = card;
+                    cards[i, j] = cardEntries[cardOrder[index]];
+                    index++;
                 }
             }
-            Card.BackImage = bitmapImages[0];
+
             Build(cards, x, y, cardSizeX, cardSizeY);
+        }
+
+    }
+
+    public static class ExtensionMethods
+    {
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            Random r = new Random();
+            for (int i = 0; i < list.Count; i++)
+            {
+                T t = list[i];
+                int rand = r.Next(0, list.Count);
+                T oldValue = list[rand];
+                list[i] = oldValue;
+                list[rand] = t;
+            }
         }
     }
 }
