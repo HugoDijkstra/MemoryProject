@@ -104,7 +104,7 @@ public class NetworkHandler {
         _serverInit = new NetworkCommand("S:INIT", (x) => {
             networkID = int.Parse(x[0]);
             OnInitialized(networkID);
-            _serverConnect.send(networkID.ToString());
+            //_serverConnect.send(networkID.ToString());
         });
 
         _serverDisconectHost = new NetworkCommand("S:NOHOST", (x) => {
@@ -122,9 +122,11 @@ public class NetworkHandler {
                 ClientConnection[] clients = NetworkManager.getInstance().getClientConnections();
                 int length = clients.Length;
                 for (int i = 0; i < length; i++) {
-                    NetworkManager.getInstance().sendTargetCommand(clients[i].networkID, _serverSyncConnection, x);
+                    if(clients[i].networkID != int.Parse(x[0]))
+                        NetworkManager.getInstance().sendTargetCommand(clients[i].networkID, _serverSyncConnection, x);
                 }
-                OnResyncRequest?.Invoke(int.Parse(x[0]));
+                if (-1 != int.Parse(x[0]))
+                    OnResyncRequest?.Invoke(int.Parse(x[0]));
             }
         });
 
@@ -183,10 +185,18 @@ public class NetworkHandler {
 
         for (int i = 0; i < _cleintCommands.Count(); i++){
             if (_cleintCommands[i].key == _command) {
-                if(_cleintCommands[i].idCheck && networkID != int.Parse(_data[0]))
+
+                if (_cleintCommands[i].idCheck){
+                    if (networkID != int.Parse(_data[0])){
+                        _cleintCommands[i].callback?.Invoke(_data);
+                    }
+                    else { 
+                        return;
+                    }                    
+                }
+                else if (!_cleintCommands[i].idCheck) { 
                     _cleintCommands[i].callback?.Invoke(_data);
-                else if(!_cleintCommands[i].idCheck)
-                    _cleintCommands[i].callback?.Invoke(_data);
+                }
             }
         }
     }
@@ -309,12 +319,12 @@ public class NetworkManager {
     public void send(string _id, string[] _data) {
         // format data
         string message = formatCommand(_id, _data);
-
+        
         string debug = "";
         for (int i = 0; i < _data.Length; i++){
             debug += _data[i] + ", ";
         }
-        Console.WriteLine(string.Format("[{2}] SENDING -> {0} {1}", _id, debug, DateTime.UtcNow.Ticks.ToString()));
+        Console.WriteLine(string.Format("[{1}] SENDING -> {0}", message, DateTime.UtcNow.Ticks.ToString()));
 
         if (networkType == NetworkType.Host) {
             // send data to all clients
@@ -353,13 +363,9 @@ public class NetworkManager {
         string[] array = _message.Split(',');
         string command = array[0];
         string[] data = array.Skip(1).ToArray();
-
         
-        string debug = "";
-        for (int i = 0; i < data.Length; i++){
-            debug += data[i] + ", ";
-        }
-        Console.WriteLine(string.Format("[{2}] RECIEVE -> {0} {1}", command, debug, DateTime.UtcNow.Ticks.ToString()));
+        string message = formatCommand(command, data);
+        Console.WriteLine(string.Format("[{1}] RECIEVING -> {0}", message, DateTime.UtcNow.Ticks.ToString()));
 
         OnRecieveCommand?.Invoke(command, data);
     }
