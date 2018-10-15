@@ -63,6 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Class\NetworkManager.cs" />
+    <Compile Include="Class\Player.cs" />
     <Compile Include="Class\Stats.cs" />
     <Compile Include="Class\StatsManager.cs" />
     <Page Include="MainWindow.xaml">
@@ -73,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Class\TurnManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
