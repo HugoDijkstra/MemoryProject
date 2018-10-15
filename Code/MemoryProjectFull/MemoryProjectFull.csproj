@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Jil, Version=2.16.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jil.2.16.0\lib\net45\Jil.dll</HintPath>
@@ -62,6 +65,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Class\Card.cs" />
+    <Compile Include="Class\GamePanel.cs" />
+    <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\NetworkManager.cs" />
     <Compile Include="Class\Player.cs" />
     <Compile Include="Class\Stats.cs" />

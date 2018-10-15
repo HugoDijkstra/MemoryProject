@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace MemoryProject
+namespace MemoryProjectFull
 {
     class ImageGetter
     {
@@ -57,7 +57,7 @@ namespace MemoryProject
                 }
                 File.WriteAllText("html.html", html);
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine(e);
             }
@@ -66,7 +66,8 @@ namespace MemoryProject
 
         private static BitmapImage GetImageFromWeb(string url, int decodeWidth)
         {
-
+            if (!url.Contains("http"))
+                return null;
             BitmapImage bitmap = new BitmapImage();
             try
             {
