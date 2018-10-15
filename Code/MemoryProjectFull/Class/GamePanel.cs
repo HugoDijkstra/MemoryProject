@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace MemoryProjectFull
 {
@@ -19,7 +20,13 @@ namespace MemoryProjectFull
 
         OnClickDoneArgs doneArgs;
 
+        DispatcherTimer flipTimer;
+        Card waitForFlip;
+
         Card[,] cards;
+
+        bool localPaused;
+
         public GamePanel()
         {
             Run(4, 4);
@@ -44,6 +51,8 @@ namespace MemoryProjectFull
         /// <param name="carSizeY">Size of the cards in the y axis</param>
         public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
+            flipTimer = new DispatcherTimer();
+            flipTimer.Start();
             Card.callback = HandleCallback;
             Run(widht, height, carSizeX, carSizeY, theme);
         }
@@ -55,6 +64,11 @@ namespace MemoryProjectFull
 
         private void HandleCallback(Card c)
         {
+            if (localPaused)
+                return;
+            if (doneArgs.firstCard != null)
+                if (c == doneArgs.firstCard)
+                    return;
             c.Flip();
             CardClicked(c);
         }
@@ -117,20 +131,30 @@ namespace MemoryProjectFull
             }
             doneArgs = new OnClickDoneArgs();
             firstCardClicked = false;
+            localPaused = false;
         }
 
         public void Activate()
         {
-
+            localPaused = false;
         }
 
         public void Deactivate()
         {
-
+            localPaused = true;
         }
 
+
+        ///TODO documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
         private void CardClicked(Card c)
         {
+            if (localPaused)
+                return;
+
             if (!firstCardClicked)
             {
                 doneArgs.firstCard = c;
@@ -138,6 +162,7 @@ namespace MemoryProjectFull
             }
             else
             {
+
                 doneArgs.secondCard = c;
                 doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
                 if (doneArgs.Correct)
@@ -147,15 +172,31 @@ namespace MemoryProjectFull
                 }
                 else
                 {
-                    doneArgs.firstCard.Flip();
-                    doneArgs.secondCard.Flip();
+                    waitForFlip = doneArgs.secondCard;
+                    Deactivate();
+                    flipTimer.Tick += FlipTimer_Tick;
                 }
                 OnClickDone(doneArgs);
-                doneArgs = new OnClickDoneArgs();
                 firstCardClicked = false;
             }
         }
 
+        private void FlipTimer_Tick(object sender, EventArgs e)
+        {
+            if (!waitForFlip.IsFlipping())
+            {
+                doneArgs.firstCard.Flip();
+                doneArgs.secondCard.Flip();
+                flipTimer.Tick -= FlipTimer_Tick;
+                doneArgs = new OnClickDoneArgs();
+            }
+        }
+
+        ///TODO documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnClickDone(OnClickDoneArgs e)
         {
             EventHandler<OnClickDoneArgs> eventHandler = onClickDone;
@@ -190,11 +231,22 @@ namespace MemoryProjectFull
             }
             Build(cards, x, y);
         }
+
+        ///TODO documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="cardSizeX"></param>
+        /// <param name="cardSizeY"></param>
+        /// <param name="theme"></param>
         public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
         {
             cards = new Card[x, y];
             List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeX);
             int image = 1;
+            Card.BackImage = bitmapImages[0];
             List<Card> cardEntries = new List<Card>();
             for (int i = 0; i < (x * y) / 2; i++)
             {
@@ -202,7 +254,6 @@ namespace MemoryProjectFull
                 cardEntries.Add(new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]));
                 image++;
             }
-            Card.BackImage = bitmapImages[0];
             List<int> cardOrder = new List<int>();
 
             for (int i = 0; i < cardEntries.Count; i++)
