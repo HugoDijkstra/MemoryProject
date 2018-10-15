@@ -65,8 +65,10 @@ namespace MemoryProjectFull
 
             // create netowork command
             _OnFlip = new NetworkCommand("G:CFLIP", // <-- network command id (G = 'global/game', S = 'server')
-            (x) => { // <-- callback when command is resieved
-                this.Dispatcher.Invoke(() => { // <-- do this when working with UI (stops calling objects from networking thread)
+            (x) =>
+            { // <-- callback when command is resieved
+                this.Dispatcher.Invoke(() =>
+                { // <-- do this when working with UI (stops calling objects from networking thread)
                     int xPos = int.Parse(x[0]);
                     int yPos = int.Parse(x[1]);
 
@@ -88,11 +90,15 @@ namespace MemoryProjectFull
             Card.callback = null;
         }
 
-        private void HandleCallback(Card c){
+        private void HandleCallback(Card c)
+        {
             // send the command (this is to much work, maby store grid x, y in card class)
-            for (int x = 0; x < gridSizeX; x++){
-                for (int y = 0; y < gridSizeY; y++){
-                    if (cards[x, y] == c) {
+            for (int x = 0; x < gridSizeX; x++)
+            {
+                for (int y = 0; y < gridSizeY; y++)
+                {
+                    if (cards[x, y] == c)
+                    {
                         _OnFlip.send(new string[2] { x.ToString(), y.ToString() });
                         return;
                     }
