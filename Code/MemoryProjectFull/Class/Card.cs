@@ -161,7 +161,7 @@ namespace MemoryProjectFull
 
         public Card(long id, Size size, Point position, ImageSource frontImage)
         {
-            if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card");
+            // if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card"); // <-- ERROR?
 
             this.Margin = new Thickness(position.X, position.Y, 0, 0);
             this.Width = size.Width;

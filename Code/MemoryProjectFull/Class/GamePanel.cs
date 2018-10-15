@@ -15,6 +15,12 @@ namespace MemoryProjectFull
 {
     class GamePanel : Grid
     {
+        // for networking (create a network commmand)
+        private NetworkCommand _OnFlip;
+
+        // i need grid size x and y for this (other way to know wat card is wat, now i do it with x,y pos in array)
+        private int gridSizeX;
+        private int gridSizeY;
 
         bool firstCardClicked;
 
@@ -53,6 +59,26 @@ namespace MemoryProjectFull
         {
             flipTimer = new DispatcherTimer();
             flipTimer.Start();
+            // for networking (i need the size of the grid for the for loop search, can be fixed with array x,y in card class)
+            gridSizeX = widht;
+            gridSizeY = height;
+
+            // create netowork command
+            _OnFlip = new NetworkCommand("G:CFLIP", // <-- network command id (G = 'global/game', S = 'server')
+            (x) => { // <-- callback when command is resieved
+                this.Dispatcher.Invoke(() => { // <-- do this when working with UI (stops calling objects from networking thread)
+                    int xPos = int.Parse(x[0]);
+                    int yPos = int.Parse(x[1]);
+
+                    // normaal shit
+                    cards[xPos, yPos].Flip();
+                    CardClicked(cards[xPos, yPos]);
+                });
+            },
+            false, // <-- only accept command with divrent ID then this client (true/false)
+            true); // <-- auto activate command (add command to command listener list)
+
+            // normaal shit
             Card.callback = HandleCallback;
             Run(widht, height, carSizeX, carSizeY, theme);
         }
@@ -62,15 +88,19 @@ namespace MemoryProjectFull
             Card.callback = null;
         }
 
-        private void HandleCallback(Card c)
-        {
-            if (localPaused)
-                return;
-            if (doneArgs.firstCard != null)
-                if (c == doneArgs.firstCard)
-                    return;
-            c.Flip();
-            CardClicked(c);
+        private void HandleCallback(Card c){
+            // send the command (this is to much work, maby store grid x, y in card class)
+            for (int x = 0; x < gridSizeX; x++){
+                for (int y = 0; y < gridSizeY; y++){
+                    if (cards[x, y] == c) {
+                        _OnFlip.send(new string[2] { x.ToString(), y.ToString() });
+                        return;
+                    }
+                }
+            }
+
+            //c.Flip();
+            //CardClicked(c);
         }
 
         public void Build(Card[,] cards, int xAmount, int yAmount)
