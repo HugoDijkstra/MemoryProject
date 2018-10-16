@@ -10,21 +10,15 @@ namespace NewMemoryGame
     {
         public int ID;
         public string name;
-        int score;
+        //int score;
 
-       // TextBox playerInfo;
+        public int nextID;
 
-        public Player(string _name, int _ID)
+        public Player(string _name, int _ID, int _nextID)
         {
             name = _name;
             ID = _ID;
+            nextID = _nextID;
         }
-
-       /* public TextBox ShowPlayerInformation()
-        {
-            playerInfo = new TextBox();
-            playerInfo.Text = "Name: " + name;
-            return playerInfo;
-        }*/
     }
 }
