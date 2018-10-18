@@ -73,7 +73,6 @@ namespace MemoryProjectFull
                     int yPos = int.Parse(x[1]);
 
                     // normaal shit
-                    cards[xPos, yPos].Flip();
                     CardClicked(cards[xPos, yPos]);
                 });
             },
@@ -90,23 +89,20 @@ namespace MemoryProjectFull
             Card.callback = null;
         }
 
-        private void HandleCallback(Card c)
-        {
+        private void HandleCallback(Card c){
+
+            if (localPaused)
+                return;
+
             // send the command (this is to much work, maby store grid x, y in card class)
-            for (int x = 0; x < gridSizeX; x++)
-            {
-                for (int y = 0; y < gridSizeY; y++)
-                {
-                    if (cards[x, y] == c)
-                    {
+            for (int x = 0; x < gridSizeX; x++){
+                for (int y = 0; y < gridSizeY; y++){
+                    if (cards[x, y] == c){
                         _OnFlip.send(new string[2] { x.ToString(), y.ToString() });
                         return;
                     }
                 }
             }
-
-            //c.Flip();
-            //CardClicked(c);
         }
 
         public void Build(Card[,] cards, int xAmount, int yAmount)
@@ -186,20 +182,19 @@ namespace MemoryProjectFull
         /// 
         /// </summary>
         /// <param name="c"></param>
-        private void CardClicked(Card c)
-        {
-            if (localPaused)
-                return;
+        private void CardClicked(Card c){
 
             if (!firstCardClicked)
             {
                 doneArgs.firstCard = c;
+                c.Flip();
                 firstCardClicked = true;
             }
             else
             {
 
                 doneArgs.secondCard = c;
+                c.Flip();
                 doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
                 if (doneArgs.Correct)
                 {
@@ -320,6 +315,7 @@ namespace MemoryProjectFull
         public static void Shuffle<T>(this IList<T> list)
         {
             Random r = new Random();
+            
             for (int i = 0; i < list.Count; i++)
             {
                 T t = list[i];

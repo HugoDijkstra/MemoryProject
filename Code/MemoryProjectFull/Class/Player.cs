@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace NewMemoryGame
 {
-    class Player
-    {
+    class Player{
         public int ID;
         public string name;
-        //int score;
-
         public int nextID;
 
-        public Player(string _name, int _ID, int _nextID)
-        {
+        public Player(string _name, int _ID, int _nextID){
             name = _name;
             ID = _ID;
             nextID = _nextID;

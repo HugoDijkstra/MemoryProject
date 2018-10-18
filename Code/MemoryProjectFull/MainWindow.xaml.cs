@@ -1,4 +1,5 @@
 ﻿using MemoryProjectFull;
+using NewMemoryGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,32 +43,64 @@ namespace MemoryProjectFull
 
 class Menu : Canvas {
 
+    private TextBox tb_nameInput;
+    private Button b_name;
+
+    private TextBlock tb_nameText;
     private Button b_host;
     private Button b_client;
 
+    private Button b_start;
+
+    private LobbyManager lobbyManager;
+    private GamePanel gamepanel;
+    private TurnManager turnManager;
+
+    private NetworkCommand _startGameCommand;
+
     public Menu() : base() {
 
-        // host button
-        b_host = new Button();
-        b_host.Content = "HOST";
-        b_host.Margin = new Thickness(100, 100, 0, 0);
-        b_host.Width = 50;
-        b_host.Height = 50;
-        b_host.Click += (x, y) => {
-            start(true);
-        };
-        this.Children.Add(b_host);
+        _startGameCommand = new NetworkCommand("G:START", (x) => {
+            this.Dispatcher.Invoke(() => { lobbyManager.startGame(); });
+        }, false, true);
 
-        // client button
-        b_client = new Button();
-        b_client.Content = "CLIENT";
-        b_client.Margin = new Thickness(100, 150, 0, 0);
-        b_client.Width = 50;
-        b_client.Height = 50;
-        b_client.Click += (x, y) => {
+        tb_nameInput = UIFactory.CreateTextBox(new Thickness(), new Point(200, 30), 20);
+        this.Children.Add(tb_nameInput);
+
+        b_name = UIFactory.CreateButton("Confirm Name", new Thickness(), new Point(200, 50), (x, y) => {
+            if (tb_nameInput.Text == string.Empty) {
+                return;
+            }
+
+            tb_nameText.Text = tb_nameInput.Text;
+
+            this.Children.Remove(tb_nameInput);
+            this.Children.Remove(b_name);
+
+            this.Children.Add(tb_nameText);
+            this.Children.Add(b_client);
+            this.Children.Add(b_host);
+
+            UIFactory.Center(1300, 300, 3, tb_nameText, b_host, b_client);
+        });
+
+        this.Children.Add(b_name);
+        UIFactory.Center(1300, 300, 3, tb_nameInput, b_name);
+
+        tb_nameText = UIFactory.CreateTextBlock("NULL", new Thickness(), new Point(200, 50), 20);
+
+        b_host = UIFactory.CreateButton("HOST", new Thickness(), new Point(200, 50), (x, y) => {
+            start(true);
+        });
+        
+        b_client = UIFactory.CreateButton("CLIENT", new Thickness(), new Point(200, 50), (x, y) => {
             start(false);
-        };
-        this.Children.Add(b_client);
+        });
+
+        b_start = UIFactory.CreateButton("START GAME", new Thickness(), new Point(200, 50), (x, y) => {
+            _startGameCommand.send("");
+        });
+
     }
 
     public void start(bool _isHost) {
@@ -76,11 +109,11 @@ class Menu : Canvas {
 
         if (_isHost) {
             NetworkManager.getInstance().create(NetworkType.Host, "127.0.0.1", 8001, (x) => { // start host
-                MessageBox.Show(string.Format("host -> id: {0}", x));
+                this.Dispatcher.Invoke(() => createLobby());
             });
         } else {
             NetworkManager.getInstance().create(NetworkType.Client, "127.0.0.1", 8001, (x) => { // start client
-                MessageBox.Show(string.Format("client -> id: {0}", x));
+                this.Dispatcher.Invoke(() => createLobby());
             });
         }
 
@@ -88,15 +121,25 @@ class Menu : Canvas {
             MessageBox.Show("Lost connection with host!");
         };
 
-        //LobbyManager lobbyManager = new LobbyManager();
+        
+    }
 
-        //lobbyManager.OnStart += () => {
-        //    Console.WriteLine("Game Has Started");
-        //};
+    private void createLobby() {
+        lobbyManager = new LobbyManager(tb_nameInput.Text);
 
-        // at the end
-        GamePanel gamePanel = new GamePanel(5, 4, 200, 1000, "Cats"); // init the game panel
-        this.Children.Add(gamePanel);
+        lobbyManager.OnStart += (x) => {
+            this.Children.Remove(b_start);
+
+            gamepanel = new GamePanel(5, 4, 200, 1000, "cats"); // init the game panel
+            this.Children.Add(gamepanel);
+
+            turnManager = new TurnManager(x, gamepanel);
+        };
+
+        if (NetworkHandler.getInstance().isHost()) {
+            this.Children.Add(b_start);
+            UIFactory.Center(1300, 300, 3, b_start);
+        }
     }
 
 }
