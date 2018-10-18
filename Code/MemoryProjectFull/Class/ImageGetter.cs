@@ -49,6 +49,9 @@ namespace MemoryProjectFull
                     {
                         Console.WriteLine(e.ToString());
                     }
+                    imageAmount++;
+                    if (imageAmount >= amount)
+                        return returnValue;
                 }
                 File.WriteAllText("html.html", html);
             }
@@ -95,6 +98,8 @@ namespace MemoryProjectFull
                             continue;
                         }
                         returnValue.Add(pb);
+                        if (imageAmount >= amount)
+                            return returnValue;
                     }
                     catch (System.Exception e)
                     {
