@@ -43,7 +43,6 @@ namespace MemoryProjectFull
                     imageLocation = imageLocation.Substring(0, imageLocation.IndexOf('"'));
                     try
                     {
-                        Console.WriteLine(imageLocation.Length);
                         if (!imageLocation.Contains(',') && !imageLocation.Contains('<') && imageLocation.Length > 0)
                         {
                             returnValue.Add(imageLocation);
