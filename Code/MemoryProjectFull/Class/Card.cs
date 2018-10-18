@@ -19,25 +19,22 @@ namespace MemoryProjectFull
 
             private enum Motion { COUNTERCLOCKWISE, CLOCKWISE }
 
-            private const uint max_rotation = 180;
-            private const uint mid_rotation = 90;
-            private const uint min_rotation = 0;
+            private const uint MAX_ROTATION = 180;
+            private const uint MID_ROTATION = 90;
+            private const uint MIN_ROTATION = 0;
 
-            private const double duration = 500.0;
-            private const uint frames = 60;
+            private const double DURATION = 500.0;
+            private const uint FRAMES = 60;
 
-            private const uint step = max_rotation / frames;
+            private const uint STEP = MAX_ROTATION / FRAMES;
 
             public Animator(Card card)
             {
                 this.card = card;
-                this.timer = new DispatcherTimer(DispatcherPriority.Send);
-                this.updatePending = false;
-                this.rotation = min_rotation;
+                this.timer = new DispatcherTimer(interval, DispatcherPriority.Send, UpdateAnimation, Dispatcher.CurrentDispatcher);
+                this.timer.Stop(); //prevent timer from running automagically.
+                this.rotation = MIN_ROTATION;
                 this.motion = Motion.COUNTERCLOCKWISE;
-
-                timer.Interval = new TimeSpan(0, 0, 0, 0, (int) Math.Round(duration / frames));
-                timer.Tick += new EventHandler(UpdateAnimation);
             }
 
             public void Start()
@@ -57,32 +54,52 @@ namespace MemoryProjectFull
             public void ReverseMotion()
             {
                 this.motion = (this.motion == Motion.COUNTERCLOCKWISE) ? Motion.CLOCKWISE : Motion.COUNTERCLOCKWISE;
-            }
 
-            public void Stop()
-            {
-                if (IsAnimating())
+                if (rotation == MID_ROTATION)
                 {
-                    timer.Stop();
-                    card.IsEnabled = true;
-                    updatePending = false;
+                    card.SwapFace();
                 }
             }
 
-            public void DrawNextFrame(DrawingContext context)
+            private void RotateCounterclockwise()
             {
-                updatePending = false;
+                if (rotation >= MAX_ROTATION)
+                {
+                    this.Stop();
+                    motion = Motion.CLOCKWISE;
 
-                ImageSource img = card.IsRevealed() ? card.front : Card.back;
-                int frame_width = (int)(card.Width * cosines[rotation]);
-                Rect rect = new Rect(new Point(((card.Width - frame_width) / 2), 0), (new Size(frame_width, card.Height)));
+                    return;
+                }
 
-                context.DrawImage(img, rect);
+                rotation += STEP;
+
+                if (rotation == MID_ROTATION)
+                {
+                    card.SwapFace();
+                }
+            }
+
+            private void RotateClockwise()
+            {
+                if (rotation == MIN_ROTATION)
+                {
+                    this.Stop();
+                    motion = Motion.COUNTERCLOCKWISE;
+
+                    return;
+                }
+
+                rotation -= STEP;
+
+                if (rotation == MID_ROTATION)
+                {
+                    card.SwapFace();
+                }
             }
 
             private void UpdateAnimation(object o, EventArgs e)
             {
-                switch(motion)
+                switch (motion)
                 {
                     case Motion.COUNTERCLOCKWISE:
                         RotateCounterclockwise();
@@ -92,76 +109,54 @@ namespace MemoryProjectFull
                         break;
                 }
 
-                if (!updatePending)
-                {
-                    updatePending = true;
-                    card.InvalidateVisual();
-                }
+                card.InvalidateVisual();
             }
 
-            private void RotateCounterclockwise()
+            public void DrawNextFrame(DrawingContext context)
             {
-                if (rotation == mid_rotation)
-                {
-                    card.Swap();
-                }
-                else if (rotation >= max_rotation)
-                {
-                    this.Stop();
-                    motion = Motion.CLOCKWISE;
+                ImageSource img = card.IsRevealed() ? card.front : Card.back;
+                int frame_width = (int)(card.Width * cosines[rotation]);
+                Rect rect = new Rect(new Point(((card.Width - frame_width) / 2), 0), (new Size(frame_width, card.Height)));
 
-                    return;
-                }
-
-                rotation += step;
+                context.DrawImage(img, rect);
             }
 
-            private void RotateClockwise()
+            public void Stop()
             {
-                if (rotation == mid_rotation)
+                if (IsAnimating())
                 {
-                    card.Swap();
+                    timer.Stop();
+                    card.IsEnabled = true;
                 }
-                else if (rotation == min_rotation)
-                {
-                    this.Stop();
-                    motion = Motion.COUNTERCLOCKWISE;
-
-                    return;
-                }
-
-                rotation -= step;
             }
 
             private Card card;
 
             private DispatcherTimer timer;
+            private static readonly TimeSpan interval = new TimeSpan(0, 0, 0, 0, (int)(DURATION / FRAMES));
 
-            private bool updatePending;
             private uint rotation;
             private Motion motion;
 
             private static readonly double[] cosines = ProduceCosines();
             private static double[] ProduceCosines()
             {
-                double[] cosines = new double[max_rotation + 1];
+                double[] cosines = new double[MAX_ROTATION + 1];
 
-                for (uint angle = min_rotation; angle <= max_rotation; angle++)
+                for (uint angle = MIN_ROTATION; angle <= MID_ROTATION; angle++)
                 {
                     cosines[angle] = Math.Cos(angle * (Math.PI / 180));
-                    if (cosines[angle] < 0) cosines[angle] *= -1;
+                    cosines[MAX_ROTATION - angle] = cosines[angle]; //Mirror angle
                 }
 
                 return cosines;
             }
 
-            public bool disposed = false;
-
         }
 
         public Card(long id, Size size, Point position, ImageSource frontImage)
         {
-            // if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card"); // <-- ERROR?
+            if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card");
 
             this.Margin = new Thickness(position.X, position.Y, 0, 0);
             this.Width = size.Width;
@@ -181,7 +176,8 @@ namespace MemoryProjectFull
             if (!IsFlipping())
             {
                 animator.Start();
-            } else
+            }
+            else
             {
                 animator.ReverseMotion();
             }
@@ -202,11 +198,6 @@ namespace MemoryProjectFull
             return !revealed;
         }
 
-        private void Swap()
-        {
-            revealed = !revealed;
-        }
-
         private void Reveal()
         {
             revealed = true;
@@ -215,6 +206,11 @@ namespace MemoryProjectFull
         private void Conceal()
         {
             revealed = false;
+        }
+
+        private void SwapFace()
+        {
+            revealed = !revealed;
         }
 
         private static void DefaultCallback(Card card)
@@ -260,10 +256,7 @@ namespace MemoryProjectFull
 
         public static BitmapImage BackImage
         {
-            set
-            {
-                back = value.Clone();
-            }
+            set { back = value.Clone(); }
         }
 
         private readonly long cid;
@@ -274,6 +267,7 @@ namespace MemoryProjectFull
         private bool revealed;
         private Animator animator;
 
+        [Obsolete("This field was made public by mistake. Please use the public property 'Callback' (note: uppercase 'C') instead.", false)]
         public static OnClickCallback callback = DefaultCallback;
     }
 }
