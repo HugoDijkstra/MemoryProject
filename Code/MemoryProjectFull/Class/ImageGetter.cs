@@ -43,13 +43,18 @@ namespace MemoryProjectFull
                     imageLocation = imageLocation.Substring(0, imageLocation.IndexOf('"'));
                     try
                     {
-                        returnValue.Add(imageLocation);
+                        Console.WriteLine(imageLocation.Length);
+                        if (!imageLocation.Contains(',') && !imageLocation.Contains('<') && imageLocation.Length > 0)
+                        {
+                            returnValue.Add(imageLocation);
+                            imageAmount++;
+
+                        }
                     }
                     catch (System.Exception e)
                     {
                         Console.WriteLine(e.ToString());
                     }
-                    imageAmount++;
                     if (imageAmount >= amount)
                         return returnValue;
                 }
