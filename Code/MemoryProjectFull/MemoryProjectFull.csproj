@@ -84,6 +84,8 @@
     <Compile Include="Class\GamePanel.cs" />
     <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\LobbyManager.cs" />
+    <Compile Include="Class\MCFileHandler.cs" />
+    <Compile Include="Class\MemoryConfig.cs" />
     <Compile Include="Class\NetworkManager.cs" />
     <Compile Include="Class\Player.cs" />
     <Compile Include="Class\Stats.cs" />
