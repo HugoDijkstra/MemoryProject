@@ -24,7 +24,6 @@ namespace MemoryProjectFull
     {
         public MainWindow()
         {
-            ImageGetter.GetUrlsByTheme("Dog", 100);
             InitializeComponent();
 
             const int snugContentWidth = 1300;

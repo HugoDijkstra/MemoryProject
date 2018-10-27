@@ -17,6 +17,7 @@ namespace MemoryProjectFull
     {
         // for networking (create a network commmand)
         private NetworkCommand _OnFlip;
+        private NetworkCommand _OnGridInit;
 
         // i need grid size x and y for this (other way to know wat card is wat, now i do it with x,y pos in array)
         private int gridSizeX;
@@ -79,9 +80,18 @@ namespace MemoryProjectFull
             false, // <-- only accept command with divrent ID then this client (true/false)
             true); // <-- auto activate command (add command to command listener list)
 
-            // normaal shit
-            Card.callback = HandleCallback;
-            Run(widht, height, carSizeX, carSizeY, theme);
+            _OnGridInit = new NetworkCommand("G:CGRID", (x) => {
+
+                this.Dispatcher.Invoke(() => {
+                    Card.callback = HandleCallback;
+                    Run(x, carSizeX, carSizeY);
+                });
+                
+            },
+            false,
+            true);
+
+            initRun(widht, height, carSizeX, carSizeY, theme);
         }
 
         ~GamePanel()
@@ -263,6 +273,65 @@ namespace MemoryProjectFull
             Build(cards, x, y);
         }
 
+        public void initRun(int x, int y, int cardSizeX, int cardSizeY, string theme) {
+            if (NetworkHandler.getInstance().isHost()) {
+                List<string> list = ImageGetter.GetUrlsByTheme(theme, (x * y) / 2); // <-- list of url's to images
+
+                string[] message = new string[x*y + 2];
+
+                message[0] = x.ToString();
+                message[1] = y.ToString();
+
+                string[] cardData = new string[x*y];
+
+                int listCount = 0;
+                for (int i = 0; i < cardData.Length; i+=2){
+                    string data = list[listCount] + ";" + i.ToString(); // <-- add url and id
+                    cardData[i] = data;
+                    cardData[i + 1] = data;
+
+                    listCount++;
+                }
+
+                ExtensionMethods.Shuffle<string>(cardData);
+
+                for (int i = 2; i < message.Length; i++){
+                    message[i] = cardData[i - 2];
+                }
+
+                Run(message, cardSizeX, cardSizeY);
+                _OnGridInit.send(message);
+            }
+        }
+
+        public void Run(string[] data, int cardSizeX, int cardSizeY) {
+
+            int sizeX = int.Parse(data[0]);
+            int sizeY = int.Parse(data[1]);
+
+            cards = new Card[sizeX, sizeY];
+
+            int dataCount = 2;
+            for (int x = 0; x < sizeX; x++){
+                for (int y = 0; y < sizeY; y++){
+                    // unpack data
+                    string[] dataPack = data[2].Split(';'); 
+                    // get url and id
+                    string imageUrl = dataPack[0];
+                    int id = int.Parse(dataPack[1]);
+                    // create image
+                    BitmapImage image = ImageGetter.GetImageFromWeb(imageUrl, cardSizeX);
+                    // create card
+                    cards[x, y] = new Card(id, new Size(cardSizeX, cardSizeY), new Point(0, 0), image);
+
+                    // next data pack
+                    dataCount++;
+                }
+            }
+
+            Build(cards, sizeX, sizeY, cardSizeX, cardSizeY);
+        }
+
         ///TODO documentation
         /// <summary>
         /// 
@@ -272,8 +341,7 @@ namespace MemoryProjectFull
         /// <param name="cardSizeX"></param>
         /// <param name="cardSizeY"></param>
         /// <param name="theme"></param>
-        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
-        {
+        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme){
             cards = new Card[x, y];
             List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeX);
             int image = 1;
@@ -315,7 +383,6 @@ namespace MemoryProjectFull
         public static void Shuffle<T>(this IList<T> list)
         {
             Random r = new Random();
-            
             for (int i = 0; i < list.Count; i++)
             {
                 T t = list[i];

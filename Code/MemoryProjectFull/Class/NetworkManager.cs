@@ -235,7 +235,7 @@ public class NetworkManager {
     }
 
     public void create(NetworkType _type, string _ip, int _port, Action<int> _OnInitialized) {
-        create(_type, _ip, _port, _OnInitialized, 1024);
+        create(_type, _ip, _port, _OnInitialized, 16384);
     }
 
     public void create(NetworkType _type, string _ip, int _port, Action<int> _OnInitialized, int _bufferSize) {
