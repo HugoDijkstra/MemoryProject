@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryProjectFull
 {
@@ -111,11 +107,11 @@ namespace MemoryProjectFull
             return entries.Remove(name);
         }
 
-        public IEnumerable<DataEntry> Entries()
+        public IEnumerable<DataEntry> Entries
         {
-            foreach (var entry in entries)
+            get
             {
-                yield return entry.Value;
+                foreach (var entry in entries) yield return entry.Value;
             }
         }
 
@@ -135,14 +131,35 @@ namespace MemoryProjectFull
         public static MemoryConfig LoadFromFile(string filePath)
         {
             MemoryConfig config = new MemoryConfig();
-            FileHandler.Parse(config, filePath);
+
+            try
+            {
+                FileHandler.DeserializeConfig(config, filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                config = null;
+            }
 
             return config;
         }
 
-        public void SaveToFile(string filePath)
+        public bool SaveToFile(string filePath)
         {
-            FileHandler.Compose(this, filePath);
+            bool success = true;
+
+            try
+            {
+                FileHandler.SerializeConfig(this, filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
         }
 
         public bool HasGroup(string name)
@@ -176,11 +193,11 @@ namespace MemoryProjectFull
             return groups.Remove(name);
         }
 
-        public IEnumerable<DataGroup> Groups()
+        public IEnumerable<DataGroup> Groups
         {
-            foreach (var group in groups)
+            get
             {
-                yield return group.Value;
+                foreach (var group in groups) yield return group.Value;
             }
         }
 
