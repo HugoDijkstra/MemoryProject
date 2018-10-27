@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 class Menu : Canvas {
 
@@ -27,14 +28,27 @@ class Menu : Canvas {
 
     private NetworkCommand _startGameCommand;
 
+    private LoginPanel _panel;
+
     public Menu() : base() {
 
         _startGameCommand = new NetworkCommand("G:START", (x) => {
             this.Dispatcher.Invoke(() => { lobbyManager.startGame(); });
         }, false, true);
 
+        _panel = new LoginPanel(300, 500);
+        _panel.setBackground(Brushes.Gray);
+        UIPlacer.Center(UIPlacerMode.center, 0, _panel);
+
         b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) => {
-            // callback
+
+            if (this.Children.Contains(_panel)){
+                this.Children.Remove(_panel);
+            }
+            else {
+                this.Children.Add(_panel);
+            }
+            
         });
         this.Children.Add(b_login);
 

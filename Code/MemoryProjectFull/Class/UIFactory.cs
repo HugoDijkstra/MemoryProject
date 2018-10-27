@@ -43,7 +43,16 @@ public class UIFactory {
         return t;
     }
 
-    
+    public static PasswordBox CreatePasswordBox(Thickness _margin, Point _size, int _fontSize) {
+        PasswordBox t = new PasswordBox();
+        t.Margin = _margin;
+        t.Width = _size.X;
+        t.Height = _size.Y;
+        t.FontSize = _fontSize;
+        t.PasswordChar = '\u25CF';
+
+        return t;
+    }
 }
 
 public enum UIPlacerMode {
@@ -56,6 +65,15 @@ public class UIPlacer {
     public static void Center(UIPlacerMode _mode, int _padding, params FrameworkElement[] _elements) {
         int startHeight = _mode == UIPlacerMode.top ? (int)_elements[0].Height / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
         int startWidth = MainWindow.SCREEN_WIDTH / 2;
+        for (int i = 0; i < _elements.Length; i++){
+            Thickness th = new Thickness(startWidth - (_elements[i].Width/2), startHeight, 0, 0);
+            _elements[i].Margin = th;
+            startHeight = getNextHeight(startHeight, _mode, _elements[i], _padding);
+        }
+    }
+    public static void Center(UIPlacerMode _mode, int _padding, int _widthOffset, params FrameworkElement[] _elements) {
+        int startHeight = _mode == UIPlacerMode.top ? (int)_elements[0].Height / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
+        int startWidth = MainWindow.SCREEN_WIDTH / 2 + _widthOffset;
         for (int i = 0; i < _elements.Length; i++){
             Thickness th = new Thickness(startWidth - (_elements[i].Width/2), startHeight, 0, 0);
             _elements[i].Margin = th;
