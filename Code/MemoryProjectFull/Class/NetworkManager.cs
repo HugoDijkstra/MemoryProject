@@ -408,7 +408,6 @@ public class NetworkManager {
             recieveData("S:NOHOST");
         }
     }
-
 }
 
 public class ClientConnection{
