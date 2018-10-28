@@ -34,21 +34,6 @@ namespace MemoryProjectFull
 
         bool localPaused;
 
-        public GamePanel()
-        {
-            Run(4, 4);
-        }
-
-        /// <summary>
-        /// GamePanel Constructor FOR DEBUGGING PURPOSE
-        /// </summary>
-        /// <param name="widht"></param>
-        /// <param name="height"></param>
-        public GamePanel(int widht, int height)
-        {
-            Run(widht, height);
-        }
-
         /// <summary>
         /// Constructor for the gamepanel that that creates the card and grid with set parameters
         /// </summary>
@@ -80,13 +65,15 @@ namespace MemoryProjectFull
             false, // <-- only accept command with divrent ID then this client (true/false)
             true); // <-- auto activate command (add command to command listener list)
 
-            _OnGridInit = new NetworkCommand("G:CGRID", (x) => {
+            _OnGridInit = new NetworkCommand("G:CGRID", (x) =>
+            {
 
-                this.Dispatcher.Invoke(() => {
+                this.Dispatcher.Invoke(() =>
+                {
                     Card.callback = HandleCallback;
                     Run(x, carSizeX, carSizeY);
                 });
-                
+
             },
             false,
             true);
@@ -99,52 +86,24 @@ namespace MemoryProjectFull
             Card.callback = null;
         }
 
-        private void HandleCallback(Card c){
+        private void HandleCallback(Card c)
+        {
 
             if (localPaused)
                 return;
 
             // send the command (this is to much work, maby store grid x, y in card class)
-            for (int x = 0; x < gridSizeX; x++){
-                for (int y = 0; y < gridSizeY; y++){
-                    if (cards[x, y] == c){
+            for (int x = 0; x < gridSizeX; x++)
+            {
+                for (int y = 0; y < gridSizeY; y++)
+                {
+                    if (cards[x, y] == c)
+                    {
                         _OnFlip.send(new string[2] { x.ToString(), y.ToString() });
                         return;
                     }
                 }
             }
-        }
-
-        public void Build(Card[,] cards, int xAmount, int yAmount)
-        {
-            //Cards.Count() needs to be more or equale too (x * y)
-            if (cards.Length < xAmount * yAmount)
-            {
-                Console.WriteLine("Cards.Count() needs to be more or equale too (x * y)");
-                return;
-            }
-
-            Width = 200 * xAmount;
-            Height = 250 * yAmount;
-
-            VerticalAlignment = VerticalAlignment.Center;
-            for (int i = 0; i < xAmount; i++)
-            {
-                this.RowDefinitions.Add(new RowDefinition());
-                for (int j = 0; j < yAmount; j++)
-                {
-                    this.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-                    Card c = cards[i, j];
-                    c.Margin = new Thickness(10);
-                    Border border = new Border();
-                    border.Child = c;
-                    Grid.SetColumn(((Card)(border.Child)), i);
-                    Grid.SetRow(((Card)(border.Child)), j);
-                    Children.Add(((Card)(border.Child)));
-                }
-            }
-            doneArgs = new OnClickDoneArgs();
-            firstCardClicked = false;
         }
 
         public void Build(Card[,] cards, int xAmount, int yAmount, int carSizeX, int carSizeY)
@@ -192,7 +151,8 @@ namespace MemoryProjectFull
         /// 
         /// </summary>
         /// <param name="c"></param>
-        private void CardClicked(Card c){
+        private void CardClicked(Card c)
+        {
 
             if (!firstCardClicked)
             {
@@ -256,36 +216,22 @@ namespace MemoryProjectFull
 
         public event EventHandler<OnClickDoneArgs> onClickDone;
 
-        public void Run(int x, int y)
+        public void initRun(int x, int y, int cardSizeX, int cardSizeY, string theme)
         {
-            cards = new Card[x, y];
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme("Dank memes", x * y, 200);
-
-            int image = 0;
-            for (int i = 0; i < x; i++)
+            if (NetworkHandler.getInstance().isHost())
             {
-                for (int j = 0; j < y; j++)
-                {
-                    Card card = new Card(image, new Size(200, 300), new Point(0, 0), bitmapImages[image]);
-                    cards[i, j] = card;
-                }
-            }
-            Build(cards, x, y);
-        }
-
-        public void initRun(int x, int y, int cardSizeX, int cardSizeY, string theme) {
-            if (NetworkHandler.getInstance().isHost()) {
                 List<string> list = ImageGetter.GetUrlsByTheme(theme, (x * y) / 2); // <-- list of url's to images
 
-                string[] message = new string[x*y + 2];
+                string[] message = new string[x * y + 2];
 
                 message[0] = x.ToString();
                 message[1] = y.ToString();
 
-                string[] cardData = new string[x*y];
+                string[] cardData = new string[x * y];
 
                 int listCount = 0;
-                for (int i = 0; i < cardData.Length; i+=2){
+                for (int i = 0; i < cardData.Length; i += 2)
+                {
                     string data = list[listCount] + ";" + i.ToString(); // <-- add url and id
                     cardData[i] = data;
                     cardData[i + 1] = data;
@@ -295,7 +241,8 @@ namespace MemoryProjectFull
 
                 ExtensionMethods.Shuffle<string>(cardData);
 
-                for (int i = 2; i < message.Length; i++){
+                for (int i = 2; i < message.Length; i++)
+                {
                     message[i] = cardData[i - 2];
                 }
 
@@ -304,23 +251,31 @@ namespace MemoryProjectFull
             }
         }
 
-        public void Run(string[] data, int cardSizeX, int cardSizeY) {
+        public void Run(string[] data, int cardSizeX, int cardSizeY)
+        {
 
             int sizeX = int.Parse(data[0]);
             int sizeY = int.Parse(data[1]);
 
             cards = new Card[sizeX, sizeY];
 
+            // init back card
+
+            Card.BackImage = ImageGetter.GetImageFromWeb("https://upload.wikimedia.org/wikipedia/en/2/2b/Yugioh_Card_Back.jpg", cardSizeX);
+
             int dataCount = 2;
-            for (int x = 0; x < sizeX; x++){
-                for (int y = 0; y < sizeY; y++){
+            for (int x = 0; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
                     // unpack data
-                    string[] dataPack = data[2].Split(';'); 
+                    string[] dataPack = data[2].Split(';');
                     // get url and id
                     string imageUrl = dataPack[0];
                     int id = int.Parse(dataPack[1]);
                     // create image
                     BitmapImage image = ImageGetter.GetImageFromWeb(imageUrl, cardSizeX);
+
                     // create card
                     cards[x, y] = new Card(id, new Size(cardSizeX, cardSizeY), new Point(0, 0), image);
 
@@ -341,7 +296,8 @@ namespace MemoryProjectFull
         /// <param name="cardSizeX"></param>
         /// <param name="cardSizeY"></param>
         /// <param name="theme"></param>
-        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme){
+        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
+        {
             cards = new Card[x, y];
             List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeX);
             int image = 1;
