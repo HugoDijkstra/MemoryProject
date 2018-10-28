@@ -23,7 +23,7 @@ namespace MemoryProjectFull
     public partial class MainWindow : Window
     {
         public static int SCREEN_WIDTH = 1300;
-        public static int SCREEN_HEIGHT = 700;
+        public static int SCREEN_HEIGHT = 900;
 
         public MainWindow()
         {
@@ -32,6 +32,11 @@ namespace MemoryProjectFull
             var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
             var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
             var captionHeight = SystemParameters.CaptionHeight;
+
+           Height = SCREEN_HEIGHT;
+           Width = SCREEN_WIDTH;
+
+            this.ResizeMode = ResizeMode.NoResize;
 
             Width = SCREEN_WIDTH + 2 * verticalBorderWidth;
             Height = SCREEN_HEIGHT + captionHeight + 2 * horizontalBorderHeight;

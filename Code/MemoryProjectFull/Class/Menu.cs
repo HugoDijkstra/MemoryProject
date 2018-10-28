@@ -120,7 +120,7 @@ class Menu : Canvas {
         lobbyManager.OnStart += (x) => {
             this.Children.Remove(b_start);
 
-            gamepanel = new GamePanel(5, 4, 200, 1000, "cats"); // init the game panel
+            gamepanel = new GamePanel(5, 4, 100, 200, "cats"); // init the game panel
             this.Children.Add(gamepanel);
 
             turnManager = new TurnManager(x, gamepanel);

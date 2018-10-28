@@ -106,7 +106,7 @@ namespace MemoryProjectFull
             }
         }
 
-        public void Build(Card[,] cards, int xAmount, int yAmount, int carSizeX, int carSizeY)
+        public void Build(Card[,] cards, int xAmount, int yAmount, int cardSizeX, int cardSizeY, int cardMargins)
         {
             //Cards.Count() needs to be more or equale too (x * y)
             if (cards.Length < xAmount * yAmount)
@@ -115,19 +115,29 @@ namespace MemoryProjectFull
                 return;
             }
 
-            Width = (carSizeX + 10) * xAmount;
-            Height = (carSizeY + 10) * yAmount;
+            GridLength gridheight = new GridLength(cardSizeY + cardMargins * 2);
+            GridLength gridWidth = new GridLength(cardSizeX + cardMargins * 2);
 
+            Thickness margins = new Thickness();
+
+            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * 5 / 2);
+
+            this.Margin = margins;
             for (int i = 0; i < xAmount; i++)
             {
-                this.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+                this.ColumnDefinitions.Add(new ColumnDefinition() { Width = gridWidth });
                 for (int j = 0; j < yAmount; j++)
                 {
-                    this.RowDefinitions.Add(new RowDefinition());
+                    this.RowDefinitions.Add(new RowDefinition() { Height = gridheight });
+                    Border b = new Border();
                     Card c = cards[i, j];
-                    Grid.SetColumn(c, i);
-                    Grid.SetRow(c, j);
-                    Children.Add(c);
+                    b.Height = c.Height;
+                    b.Width = c.Width;
+                    b.Margin = new Thickness(cardMargins);
+                    Grid.SetColumn(b, i);
+                    Grid.SetRow(b, j);
+                    b.Child = c;
+                    Children.Add(b);
                 }
             }
             doneArgs = new OnClickDoneArgs();
@@ -284,7 +294,9 @@ namespace MemoryProjectFull
                 }
             }
 
-            Build(cards, sizeX, sizeY, cardSizeX, cardSizeY);
+            Thickness margins = new Thickness();
+
+            Build(cards, sizeX, sizeY, cardSizeX, cardSizeY, 10);
         }
 
         ///TODO documentation
@@ -329,7 +341,7 @@ namespace MemoryProjectFull
                 }
             }
 
-            Build(cards, x, y, cardSizeX, cardSizeY);
+            Build(cards, x, y, cardSizeX, cardSizeY, 10);
         }
 
     }
