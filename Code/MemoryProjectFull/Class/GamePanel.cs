@@ -27,6 +27,8 @@ namespace MemoryProjectFull
 
         OnClickDoneArgs doneArgs;
 
+        Card currentlyFlippingA, currentlyFlippingB;
+
         DispatcherTimer flipTimer;
         Card waitForFlip;
 
@@ -203,7 +205,7 @@ namespace MemoryProjectFull
                 doneArgs = new OnClickDoneArgs();
             }
         }
-        
+
         public void RemoveCard(int id)
         {
             for (int x = 0; x < gridSizeX; x++)
@@ -212,7 +214,7 @@ namespace MemoryProjectFull
                 {
                     if (cards[y, x].ID == id)
                     {
-                        Children.Remove(cards[x, y]);
+                        this.Dispatcher.Invoke(() => { Children.Remove(cards[x, y]); });
                     }
                 }
             }
@@ -271,7 +273,7 @@ namespace MemoryProjectFull
                     message[i] = cardData[i - 2];
                 }
 
-         //       Run(message, cardSizeX, cardSizeY);
+                //       Run(message, cardSizeX, cardSizeY);
                 _OnGridInit.send(message);
             }
         }
