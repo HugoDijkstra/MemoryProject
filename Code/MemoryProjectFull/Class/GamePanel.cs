@@ -123,7 +123,7 @@ namespace MemoryProjectFull
             Thickness margins = new Thickness();
 
             margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * (float)xAmount / 2f);
-            margins.Top = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeY + cardMargins * 2) * (float)yAmount / 2f);
+            margins.Top = (MainWindow.SCREEN_HEIGHT / 2) - ((cardSizeY + cardMargins * 2) * (float)yAmount / 2f);
 
             this.Margin = margins;
             for (int i = 0; i < xAmount; i++)
