@@ -41,8 +41,16 @@ namespace MemoryProjectFull
             for (int i = 0; i < users.Count; i++)
             {
                 usrs.Add(new User() { name = users[i], losses = Convert.ToInt32(losses[i]), wins = Convert.ToInt32(wins[i]) });
+
             }
 
+            Random random = new Random();
+
+            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
+            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
+            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
+            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
+            usrs.Sort((a, b) => { return b.winlose.CompareTo(a.winlose); });
             string highscores = "";
 
             for (int i = 0; i < usrs.Count; i++)
@@ -63,6 +71,14 @@ namespace MemoryProjectFull
             public string name;
             public int wins;
             public int losses;
+
+            public float winlose
+            {
+                get
+                {
+                    return ((float)wins) / ((float)losses);
+                }
+            }
 
             public override string ToString()
             {

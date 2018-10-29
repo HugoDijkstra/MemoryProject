@@ -9,7 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-class Menu : Canvas {
+class Menu : Canvas
+{
 
     private Button b_login;
 
@@ -30,9 +31,11 @@ class Menu : Canvas {
 
     private LoginPanel _panel;
 
-    public Menu() : base() {
+    public Menu() : base()
+    {
 
-        _startGameCommand = new NetworkCommand("G:START", (x) => {
+        _startGameCommand = new NetworkCommand("G:START", (x) =>
+        {
             this.Dispatcher.Invoke(() => { lobbyManager.startGame(); });
         }, false, true);
 
@@ -40,15 +43,18 @@ class Menu : Canvas {
         _panel.setBackground(Brushes.Gray);
         UIPlacer.Center(UIPlacerMode.center, 0, _panel);
 
-        b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) => {
+        b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) =>
+        {
 
-            if (this.Children.Contains(_panel)){
+            if (this.Children.Contains(_panel))
+            {
                 this.Children.Remove(_panel);
             }
-            else {
+            else
+            {
                 this.Children.Add(_panel);
             }
-            
+
         });
         this.Children.Add(b_login);
 
@@ -57,8 +63,10 @@ class Menu : Canvas {
         tb_nameInput = UIFactory.CreateTextBox(new Thickness(), new Point(200, 30), 20);
         this.Children.Add(tb_nameInput);
 
-        b_name = UIFactory.CreateButton("Confirm Name", new Thickness(), new Point(200, 50), (x, y) => {
-            if (tb_nameInput.Text == string.Empty) {
+        b_name = UIFactory.CreateButton("Confirm Name", new Thickness(), new Point(200, 50), (x, y) =>
+        {
+            if (tb_nameInput.Text == string.Empty)
+            {
                 return;
             }
 
@@ -79,48 +87,69 @@ class Menu : Canvas {
 
         tb_nameText = UIFactory.CreateTextBlock("NULL", new Thickness(), new Point(200, 50), 20);
 
-        b_host = UIFactory.CreateButton("HOST", new Thickness(), new Point(200, 50), (x, y) => {
+        b_host = UIFactory.CreateButton("HOST", new Thickness(), new Point(200, 50), (x, y) =>
+        {
             start(true);
         });
-        
-        b_client = UIFactory.CreateButton("CLIENT", new Thickness(), new Point(200, 50), (x, y) => {
+
+        b_client = UIFactory.CreateButton("CLIENT", new Thickness(), new Point(200, 50), (x, y) =>
+        {
             start(false);
         });
 
-        b_start = UIFactory.CreateButton("START GAME", new Thickness(), new Point(200, 50), (x, y) => {
+        b_start = UIFactory.CreateButton("START GAME", new Thickness(), new Point(200, 50), (x, y) =>
+        {
             _startGameCommand.send("");
         });
         HighscorePanel highscorePanel = new HighscorePanel(300, 300);
         this.Children.Add(highscorePanel);
         UIPlacer.Center(UIPlacerMode.center, 0, highscorePanel);
 
+        PlayerInfo info = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopLeft, 20);
+        PlayerInfo info1 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopRight, 20);
+        PlayerInfo info2 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomLeft, 20);
+        PlayerInfo info3 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomRight, 20);
+
+        this.Children.Add(info);
+        this.Children.Add(info1);
+        this.Children.Add(info2);
+        this.Children.Add(info3);
     }
 
-    public void start(bool _isHost) {
+    public void start(bool _isHost)
+    {
         this.Children.Remove(b_host);
         this.Children.Remove(b_client);
 
-        if (_isHost) {
-            NetworkManager.getInstance().create(NetworkType.Host, "127.0.0.1", 8001, (x) => { // start host
+        if (_isHost)
+        {
+            NetworkManager.getInstance().create(NetworkType.Host, "127.0.0.1", 8001, (x) =>
+            { // start host
                 this.Dispatcher.Invoke(() => createLobby());
             });
-        } else {
-            NetworkManager.getInstance().create(NetworkType.Client, "192.168.2.52", 8001, (x) => { // start client
+        }
+        else
+        {
+            NetworkManager.getInstance().create(NetworkType.Client, "192.168.2.52", 8001, (x) =>
+            { // start client
                 this.Dispatcher.Invoke(() => createLobby());
             });
         }
 
-        NetworkHandler.getInstance().OnLostConnectionToHost += () => { // on lost connection with host callback
+        NetworkHandler.getInstance().OnLostConnectionToHost += () =>
+        { // on lost connection with host callback
             MessageBox.Show("Lost connection with host!");
         };
 
-        
+
     }
 
-    private void createLobby() {
+    private void createLobby()
+    {
         lobbyManager = new LobbyManager(tb_nameInput.Text);
 
-        lobbyManager.OnStart += (x) => {
+        lobbyManager.OnStart += (x) =>
+        {
             this.Children.Remove(b_start);
 
             gamepanel = new GamePanel(5, 4, 100, 200, "cats"); // init the game panel
@@ -129,7 +158,8 @@ class Menu : Canvas {
             turnManager = new TurnManager(x, gamepanel);
         };
 
-        if (NetworkHandler.getInstance().isHost()) {
+        if (NetworkHandler.getInstance().isHost())
+        {
             this.Children.Add(b_start);
             UIPlacer.Center(UIPlacerMode.center, 3, b_start);
         }

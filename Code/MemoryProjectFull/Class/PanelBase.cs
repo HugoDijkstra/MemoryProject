@@ -92,7 +92,7 @@ public class LoginPanel : PanelBase {
         });
 
         this.addChild(tb_name, tb_password, b_login, b_switch, tb_message);
-        UIPlacer.Center(UIPlacerMode.center, 3, -(MainWindow.SCREEN_WIDTH/2 - 150), tb_message, tb_name, tb_password, b_login, b_switch); // <-- used to center stuf on screen
+        UIPlacer.Center(UIPlacerMode.center, 3, -(MainWindow.SCREEN_WIDTH / 2 - 150), tb_message, tb_name, tb_password, b_login, b_switch); // <-- used to center stuf on screen
         UIPlacer.Center(UIPlacerMode.center, 3, -(MainWindow.SCREEN_WIDTH / 2 - 150), tb_message, tb_reg_name, tb_reg_password, b_register, b_switch); // <-- used to center stuf on screen
     }
 

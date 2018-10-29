@@ -93,6 +93,7 @@
     <Compile Include="Class\NetworkManager.cs" />
     <Compile Include="Class\PanelBase.cs" />
     <Compile Include="Class\Player.cs" />
+    <Compile Include="Class\PlayerInfo.cs" />
     <Compile Include="Class\Stats.cs" />
     <Compile Include="Class\StatsManager.cs" />
     <Page Include="MainWindow.xaml">
