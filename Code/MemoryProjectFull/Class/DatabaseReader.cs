@@ -6,9 +6,11 @@ using MySql.Data.MySqlClient;
 namespace MemoryProjectFull
 {
 
-    public static class MemoryDatabase {
+    public static class MemoryDatabase
+    {
         public static DatabaseReader database;
-        public static void init() {
+        public static void init()
+        {
             database = new DatabaseReader("185.216.163.49", "8000", "database", "root", "root");
         }
     }
@@ -83,12 +85,13 @@ namespace MemoryProjectFull
 
             string returnvalue = "";
 
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
-            while (dataReader.Read())
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
             {
-                returnvalue += dataReader[column] + " , ";
+                while (dataReader.Read())
+                {
+                    returnvalue += dataReader[column] + " , ";
+                }
             }
-            dataReader.Close();
             return returnvalue;
         }
 
@@ -104,15 +107,16 @@ namespace MemoryProjectFull
 
             string returnvalue = "";
 
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
-            while (dataReader.Read())
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
             {
-                for (int i = 0; i < dataReader.FieldCount; i++)
+                while (dataReader.Read())
                 {
-                    returnvalue += dataReader[i] + " , ";
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        returnvalue += dataReader[i] + " , ";
+                    }
                 }
             }
-            dataReader.Close();
             return returnvalue;
         }
 
@@ -146,8 +150,10 @@ namespace MemoryProjectFull
             }
             command += ");";
 
-            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
-            sqlCommand.ExecuteNonQuery();
+            using (MySqlCommand sqlCommand = new MySqlCommand(command, _Connection))
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
         }
 
         /// <summary>
@@ -160,8 +166,8 @@ namespace MemoryProjectFull
             MySqlCommand command = new MySqlCommand("SHOW TABLES LIKE '" + tableName + "';", _Connection);
             try
             {
-                MySqlDataReader dataReader = command.ExecuteReader();
-                return dataReader.HasRows;
+                using (MySqlDataReader dataReader = command.ExecuteReader())
+                    return dataReader.HasRows;
             }
             catch (System.Exception e)
             {
@@ -207,8 +213,10 @@ namespace MemoryProjectFull
                     command += ", ";
             }
             command += ") ENGINE = InnoDB";
-            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
-            sqlCommand.ExecuteNonQuery();
+            using (MySqlCommand sqlCommand = new MySqlCommand(command, _Connection))
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
         }
 
         public enum MySqlDataType
