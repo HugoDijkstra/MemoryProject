@@ -18,7 +18,7 @@ namespace MemoryProjectFull
 
             string usersString = MemoryDatabase.database.GetDataFromTable("users", "name");
             string winsString = MemoryDatabase.database.GetDataFromTable("users", "wins");
-            string lossesString = MemoryDatabase.database.GetDataFromTable("users", "loses");
+            string lossesString = MemoryDatabase.database.GetDataFromTable("users", "losses");
 
             List<string> users = new List<string>(usersString.Split(','));
             List<string> wins = new List<string>(winsString.Split(','));
