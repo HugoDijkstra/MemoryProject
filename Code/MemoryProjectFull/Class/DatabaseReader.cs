@@ -5,6 +5,14 @@ using MySql.Data.MySqlClient;
 
 namespace MemoryProjectFull
 {
+
+    public static class MemoryDatabase {
+        public static DatabaseReader database;
+        public static void init() {
+            database = new DatabaseReader("185.216.163.49", "8000", "database", "root", "root");
+        }
+    }
+
     public class DatabaseReader
     {
         /// <summary>
@@ -19,10 +27,11 @@ namespace MemoryProjectFull
         /// <param name="DatabaseName">Name of the targeted database</param>
         /// <param name="username">Username for the databse</param>
         /// <param name="password">Password for the database</param>
-        public DatabaseReader(string IPadress, string DatabaseName, string username, string password)
+        public DatabaseReader(string IPadress, string Port, string DatabaseName, string username, string password)
         {
             _Connection = new MySqlConnection(
                 "user id=" + username + ";" +
+                "port=" + Port + ";" +
                 "password=" + password + ";" +
                 "server=" + IPadress + ";" +
                 "DATABASE=" + DatabaseName + ";" +

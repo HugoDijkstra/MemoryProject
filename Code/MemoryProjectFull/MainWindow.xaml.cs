@@ -44,6 +44,26 @@ namespace MemoryProjectFull
             Width = SCREEN_WIDTH + 2 * verticalBorderWidth;
             Height = SCREEN_HEIGHT + captionHeight + 2 * horizontalBorderHeight;
 
+            MemoryDatabase.init();
+
+            if (!MemoryDatabase.database.CheckTableExistence("users")) { 
+                SortedList<string, DatabaseReader.MySqlDataType> paramList = new SortedList<string, DatabaseReader.MySqlDataType>();
+                paramList.Add("id", DatabaseReader.MySqlDataType.Float);
+                paramList.Add("name", DatabaseReader.MySqlDataType.Text);
+                paramList.Add("password", DatabaseReader.MySqlDataType.Text);
+                paramList.Add("wins", DatabaseReader.MySqlDataType.Float);
+                paramList.Add("loses", DatabaseReader.MySqlDataType.Float);
+                MemoryDatabase.database.CreateTable("users", paramList);
+            }
+
+            SortedList<string, string>  tableData = new SortedList<string, string>();
+            tableData.Add("id", "0");
+            tableData.Add("name", "jan");
+            tableData.Add("password", "pa22word");
+            tableData.Add("wins", "0");
+            tableData.Add("loses", "0");
+            MemoryDatabase.database.AddDataToTable("users", tableData);
+
             this.AddChild(new Menu());
         }
     }
