@@ -46,6 +46,8 @@ namespace MemoryProjectFull
 
             MemoryDatabase.init();
 
+            Account.Load();
+
             if (!MemoryDatabase.database.CheckTableExistence("users")) { 
                 SortedList<string, DatabaseReader.MySqlDataType> paramList = new SortedList<string, DatabaseReader.MySqlDataType>();
                 paramList.Add("id", DatabaseReader.MySqlDataType.Float);
@@ -56,7 +58,7 @@ namespace MemoryProjectFull
                 MemoryDatabase.database.CreateTable("users", paramList);
             }
 
-            //SortedList<string, string>  tableData = new SortedList<string, string>();
+            //SortedList<string, string> tableData = new SortedList<string, string>();
             //tableData.Add("id", "0");
             //tableData.Add("name", "jan");
             //tableData.Add("password", "pa22word");

@@ -196,6 +196,36 @@ namespace MemoryProjectFull
             sqlCommand.ExecuteNonQuery();
         }
 
+        public void UpdateDataToTable(string table, string column, SortedList<string, string> values) {
+            string command = "UPDATE " + table + " SET ";
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                command += "`" + values.Keys[i] + "` = " + values.Values[i];
+                if (i < values.Count - 1)
+                    command += ',';
+            }
+
+            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
+            sqlCommand.ExecuteNonQuery();
+        }
+
+        public void UpdateDataToTableFilter(string table, string where, SortedList<string, string> values) {
+            string command = "UPDATE " + table + " SET ";
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                command += "`" + values.Keys[i] + "` = " + values.Values[i];
+                if (i < values.Count - 1)
+                    command += ',';
+            }
+
+            command += " WHERE " + where;
+
+            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
+            sqlCommand.ExecuteNonQuery();
+        }
+
         /// <summary>
         /// Check if certain table exists
         /// </summary>

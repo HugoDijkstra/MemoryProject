@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Class\Account.cs" />
     <Compile Include="Class\Card.cs" />
     <Compile Include="Class\DatabaseReader.cs" />
     <Compile Include="Class\GamePanel.cs" />

@@ -97,10 +97,7 @@ public class LoginPanel : PanelBase {
     }
 
     private void login() {
-        if (MemoryDatabase.database.CheckTableExistence("users")) {
-            string data = MemoryDatabase.database.GetDataFromTableFilter("users", "name='" + tb_name.Text + "' && password='" + tb_password.Password + "'");
-            Console.WriteLine(data);
-        }
+        Account.login(tb_name.Text, tb_password.Password);
     }
 
     private void regist() {
