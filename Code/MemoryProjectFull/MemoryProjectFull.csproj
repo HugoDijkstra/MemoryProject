@@ -81,12 +81,18 @@
     </ApplicationDefinition>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c2bbd93f4371ebecfb2304a843b02e75e06cba94
     <Compile Include="Class\Account.cs" />
 =======
     <Compile Include="Class\AudioManager.cs" />
 >>>>>>> 0630fd2757e892f10d02b68cebabbfb95dc8fc30
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 069865f... added account class
+=======
+>>>>>>> c2bbd93f4371ebecfb2304a843b02e75e06cba94
     <Compile Include="Class\Card.cs" />
     <Compile Include="Class\DatabaseReader.cs" />
     <Compile Include="Class\GamePanel.cs" />
