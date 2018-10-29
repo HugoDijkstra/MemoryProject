@@ -7,6 +7,12 @@ namespace MemoryProjectFull
     public class DataEntry
     {
 
+        public DataEntry(string name)
+        {
+            this.name = name;
+            this.value = null;
+        }
+
         public DataEntry(string name, int value)
         {
             this.name = name;
@@ -44,6 +50,11 @@ namespace MemoryProjectFull
             value = newValue;
         }
 
+        public bool IsEmpty
+        {
+            get { return (value == null); }
+        }
+
         private readonly string name;
         private object value;
 
@@ -66,6 +77,19 @@ namespace MemoryProjectFull
         public bool HasEntry(string name)
         {
             return entries.ContainsKey(name);
+        }
+
+        public DataGroup AddEntry(string name)
+        {
+            try
+            {
+                entries.Add(name, new DataEntry(name));
+                return this;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public DataGroup AddEntry(string name, int value)
@@ -96,10 +120,9 @@ namespace MemoryProjectFull
 
         public DataEntry GetEntry(string name)
         {
-            try
-            { return entries[name]; }
-            catch
-            { return null; }
+            if (!HasEntry(name)) AddEntry(name);
+
+            return entries[name];
         }
 
         public bool RemoveEntry(string name)
@@ -182,10 +205,9 @@ namespace MemoryProjectFull
 
         public DataGroup GetGroup(string name)
         {
-            try
-            { return groups[name]; }
-            catch
-            { return null; }
+            if (!HasGroup(name)) AddGroup(name);
+
+            return groups[name];
         }
 
         public bool RemoveGroup(string name)
