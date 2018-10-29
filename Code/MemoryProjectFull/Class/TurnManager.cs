@@ -20,7 +20,7 @@ namespace NewMemoryGame{
             nxtTrnCmd = new NetworkCommand("G:NTURN", Turn, false, true);
 
             if (NetworkHandler.getInstance().isHost()) { // <-- what if we have dedicated server?
-                nxtTrnCmd.send(_players[0].ID.ToString());
+                nxtTrnCmd.send(new string[3] { _players[0].ID.ToString(), "0", "0"});
             }
         }
 
