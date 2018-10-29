@@ -82,6 +82,7 @@
     <Compile Include="Class\Card.cs" />
     <Compile Include="Class\DatabaseReader.cs" />
     <Compile Include="Class\GamePanel.cs" />
+    <Compile Include="Class\HighscorePanel.cs" />
     <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\LobbyManager.cs" />
     <Compile Include="Class\MCFileHandler.cs" />
