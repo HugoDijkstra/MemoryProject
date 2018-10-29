@@ -55,9 +55,9 @@ namespace MemoryProjectFull
             get { return config_internal.Groups; }
         }
 
-        public static void Save()
+        public static bool Save()
         {
-            config_internal.SaveToFile(FILE_PATH);
+            return config_internal.SaveToFile(FILE_PATH);
         }
 
         private static MemoryConfig config_internal;
