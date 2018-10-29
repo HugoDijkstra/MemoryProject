@@ -210,7 +210,7 @@ namespace MemoryProjectFull
             {
                 for (int y = 0; x < gridSizeY; y++)
                 {
-                    if (cards[x, y].ID == id)
+                    if (cards[y, x].ID == id)
                     {
                         Children.Remove(cards[x, y]);
                     }

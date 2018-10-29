@@ -102,7 +102,7 @@ class Menu : Canvas {
                 this.Dispatcher.Invoke(() => createLobby());
             });
         } else {
-            NetworkManager.getInstance().create(NetworkType.Client, "127.0.0.1", 8001, (x) => { // start client
+            NetworkManager.getInstance().create(NetworkType.Client, "192.168.2.52", 8001, (x) => { // start client
                 this.Dispatcher.Invoke(() => createLobby());
             });
         }
