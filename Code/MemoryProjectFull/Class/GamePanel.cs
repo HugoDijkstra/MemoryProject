@@ -191,6 +191,7 @@ namespace MemoryProjectFull
                 }
                 OnClickDone(doneArgs);
                 firstCardClicked = false;
+                doneArgs = new OnClickDoneArgs();
             }
         }
 
@@ -201,7 +202,6 @@ namespace MemoryProjectFull
                 currentlyFlippingA.Flip();
                 currentlyFlippingB.Flip();
                 flipTimer.Tick -= FlipTimer_Tick;
-                doneArgs = new OnClickDoneArgs();
             }
         }
 
@@ -209,11 +209,11 @@ namespace MemoryProjectFull
         {
             for (int x = 0; x < gridSizeX; x++)
             {
-                for (int y = 0; x < gridSizeY; y++)
+                for (int y = 0; y < gridSizeY; y++)
                 {
-                    if (cards[y, x].ID == id)
+                    if (cards[x, y].ID == id)
                     {
-                        this.Dispatcher.Invoke(() => { Children.Remove(cards[x, y]); });
+                        this.Dispatcher.Invoke(() => { Children.Remove((Border)(cards[x, y].Parent)); });
                     }
                 }
             }

@@ -5,6 +5,14 @@ using MySql.Data.MySqlClient;
 
 namespace MemoryProjectFull
 {
+
+    public static class MemoryDatabase {
+        public static DatabaseReader database;
+        public static void init() {
+            database = new DatabaseReader("185.216.163.49", "8000", "database", "root", "root");
+        }
+    }
+
     public class DatabaseReader
     {
         /// <summary>
@@ -19,10 +27,11 @@ namespace MemoryProjectFull
         /// <param name="DatabaseName">Name of the targeted database</param>
         /// <param name="username">Username for the databse</param>
         /// <param name="password">Password for the database</param>
-        public DatabaseReader(string IPadress, string DatabaseName, string username, string password)
+        public DatabaseReader(string IPadress, string Port, string DatabaseName, string username, string password)
         {
             _Connection = new MySqlConnection(
                 "user id=" + username + ";" +
+                "port=" + Port + ";" +
                 "password=" + password + ";" +
                 "server=" + IPadress + ";" +
                 "DATABASE=" + DatabaseName + ";" +
@@ -50,12 +59,13 @@ namespace MemoryProjectFull
 
             string returnvalue = "";
 
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
-            while (dataReader.Read())
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
             {
-                returnvalue += dataReader[column] + " , ";
+                while (dataReader.Read())
+                {
+                    returnvalue += dataReader[column] + " , ";
+                }
             }
-            dataReader.Close();
             return returnvalue;
         }
 
@@ -67,21 +77,65 @@ namespace MemoryProjectFull
         /// <param name="Where">The variable you want to check the value for</param>
         /// <param name="WhareIs">the value you want to check against</param>
         /// <returns></returns>
-        public string GetDataFromTable(string table, string column, string Where, string WhareIs)
+        public string GetDataFromTableFilter(string table, string column, string Where, string WhereIs)
         {
-            string command = "SELECT * FROM " + table + "Where " + Where + " = " + Where;
+            string command = "SELECT * FROM " + table + " Where " + Where + " = " + WhereIs;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
             string returnvalue = "";
 
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
-            while (dataReader.Read())
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
             {
-                returnvalue += dataReader[column] + " , ";
+                while (dataReader.Read())
+                {
+                    returnvalue += dataReader[column] + " , ";
+                }
             }
-            dataReader.Close();
             return returnvalue;
         }
+
+        public string GetDataFromTableFilter(string table, string Where)
+        {
+            string command = "SELECT * FROM " + table + " Where " + Where;
+            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
+
+            string returnvalue = "";
+
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
+            {
+                while (dataReader.Read())
+                {
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        returnvalue += dataReader[i] + " , ";
+                    }
+                }
+            }
+            return returnvalue;
+        }
+
+        public bool TableContainsData(string table, string Where)
+        {
+            string command = "SELECT * FROM " + table + " Where " + Where;
+            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
+
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
+            {
+                return dataReader.FieldCount > 0;
+            }
+        }
+
+        public bool TableContainsData(string table, string Where, string WhereIs)
+        {
+            string command = "SELECT * FROM " + table + " Where " + Where + "=" + WhereIs;
+            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
+
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
+            {
+                return dataReader.HasRows;
+            }
+        }
+
 
         /// <summary>
         /// Get all data from a table
@@ -95,15 +149,16 @@ namespace MemoryProjectFull
 
             string returnvalue = "";
 
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
-            while (dataReader.Read())
+            using (MySqlDataReader dataReader = sqlCommand.ExecuteReader())
             {
-                for (int i = 0; i < dataReader.FieldCount; i++)
+                while (dataReader.Read())
                 {
-                    returnvalue += dataReader[i] + " , ";
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        returnvalue += dataReader[i] + " , ";
+                    }
                 }
             }
-            dataReader.Close();
             return returnvalue;
         }
 
@@ -151,8 +206,10 @@ namespace MemoryProjectFull
             MySqlCommand command = new MySqlCommand("SHOW TABLES LIKE '" + tableName + "';", _Connection);
             try
             {
-                MySqlDataReader dataReader = command.ExecuteReader();
-                return dataReader.HasRows;
+                using (MySqlDataReader dataReader = command.ExecuteReader())
+                {
+                    return dataReader.HasRows;
+                }
             }
             catch (System.Exception e)
             {
