@@ -23,6 +23,7 @@ namespace MemoryProjectFull
             List<string> users = new List<string>(usersString.Split(','));
             List<string> wins = new List<string>(winsString.Split(','));
             List<string> losses = new List<string>(lossesString.Split(','));
+
             for (int i = 0; i < users.Count; i++)
             {
                 users[i] = users[i].Replace(" ", "");
@@ -35,12 +36,18 @@ namespace MemoryProjectFull
                 }
             }
 
-
-            string highscores = "";
+            List<User> usrs = new List<User>();
 
             for (int i = 0; i < users.Count; i++)
             {
-                highscores += users[i] + " : " + wins[i] + " : " + losses[i] + "\n";
+                usrs.Add(new User() { name = users[i], losses = Convert.ToInt32(losses[i]), wins = Convert.ToInt32(wins[i]) });
+            }
+
+            string highscores = "";
+
+            for (int i = 0; i < usrs.Count; i++)
+            {
+                highscores += usrs[i].ToString();
             }
 
             Console.WriteLine(highscores);
@@ -53,9 +60,14 @@ namespace MemoryProjectFull
 
         struct User
         {
-            public int id;
+            public string name;
             public int wins;
             public int losses;
+
+            public override string ToString()
+            {
+                return name + " : " + wins + " : " + losses + "\n";
+            }
         }
     }
 }
