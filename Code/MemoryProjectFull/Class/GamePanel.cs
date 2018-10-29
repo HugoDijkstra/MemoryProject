@@ -120,8 +120,8 @@ namespace MemoryProjectFull
 
             Thickness margins = new Thickness();
 
-            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * xAmount / 2f);
-            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeY + cardMargins * 2) * yAmount / 2f);
+            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * (float)xAmount / 2f);
+            margins.Top = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeY + cardMargins * 2) * (float)yAmount / 2f);
 
             this.Margin = margins;
             for (int i = 0; i < xAmount; i++)
@@ -201,6 +201,20 @@ namespace MemoryProjectFull
                 doneArgs.secondCard.Flip();
                 flipTimer.Tick -= FlipTimer_Tick;
                 doneArgs = new OnClickDoneArgs();
+            }
+        }
+        
+        public void RemoveCard(int id)
+        {
+            for (int x = 0; x < gridSizeX; x++)
+            {
+                for (int y = 0; x < gridSizeY; y++)
+                {
+                    if (cards[x, y].ID == id)
+                    {
+                        Children.Remove(cards[x, y]);
+                    }
+                }
             }
         }
 

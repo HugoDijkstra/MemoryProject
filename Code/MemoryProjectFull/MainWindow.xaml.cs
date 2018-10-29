@@ -33,9 +33,12 @@ namespace MemoryProjectFull
             var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
             var captionHeight = SystemParameters.CaptionHeight;
 
-           Height = SCREEN_HEIGHT;
-           Width = SCREEN_WIDTH;
 
+            SCREEN_HEIGHT = (int)System.Windows.SystemParameters.PrimaryScreenHeight;
+            SCREEN_WIDTH = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
+
+            this.WindowState = WindowState.Maximized;
+            this.WindowStyle = WindowStyle.None;
             this.ResizeMode = ResizeMode.NoResize;
 
             Width = SCREEN_WIDTH + 2 * verticalBorderWidth;
