@@ -90,6 +90,9 @@ class Menu : Canvas {
         b_start = UIFactory.CreateButton("START GAME", new Thickness(), new Point(200, 50), (x, y) => {
             _startGameCommand.send("");
         });
+        HighscorePanel highscorePanel = new HighscorePanel(300, 300);
+        this.Children.Add(highscorePanel);
+        UIPlacer.Center(UIPlacerMode.center, 0, highscorePanel);
 
     }
 

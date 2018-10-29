@@ -79,10 +79,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+<<<<<<< HEAD
     <Compile Include="Class\Account.cs" />
+=======
+    <Compile Include="Class\AudioManager.cs" />
+>>>>>>> 0630fd2757e892f10d02b68cebabbfb95dc8fc30
     <Compile Include="Class\Card.cs" />
     <Compile Include="Class\DatabaseReader.cs" />
     <Compile Include="Class\GamePanel.cs" />
+    <Compile Include="Class\HighscorePanel.cs" />
     <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\LobbyManager.cs" />
     <Compile Include="Class\MCFileHandler.cs" />
