@@ -166,8 +166,10 @@ namespace MemoryProjectFull
         /// <param name="c"></param>
         private void CardClicked(Card c)
         {
-
-            if (!firstCardClicked)
+            if (waitForFlip != null)
+                if (waitForFlip.IsFlipping())
+                    return;
+            if (doneArgs.firstCard == null)
             {
                 doneArgs.firstCard = c;
                 c.Flip();
@@ -175,18 +177,15 @@ namespace MemoryProjectFull
             }
             else
             {
-
                 doneArgs.secondCard = c;
                 c.Flip();
                 doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
-                if (doneArgs.Correct)
+                if (!doneArgs.Correct)
                 {
-                    Children.Remove(doneArgs.firstCard);
-                    Children.Remove(doneArgs.secondCard);
-                }
-                else
-                {
-                    waitForFlip = doneArgs.secondCard;
+                    currentlyFlippingA = doneArgs.firstCard;
+                    currentlyFlippingB = doneArgs.secondCard;
+
+                    waitForFlip = currentlyFlippingB;
                     Deactivate();
                     flipTimer.Tick += FlipTimer_Tick;
                 }
@@ -199,8 +198,8 @@ namespace MemoryProjectFull
         {
             if (!waitForFlip.IsFlipping())
             {
-                doneArgs.firstCard.Flip();
-                doneArgs.secondCard.Flip();
+                currentlyFlippingA.Flip();
+                currentlyFlippingB.Flip();
                 flipTimer.Tick -= FlipTimer_Tick;
                 doneArgs = new OnClickDoneArgs();
             }
