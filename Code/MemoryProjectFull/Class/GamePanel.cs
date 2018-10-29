@@ -120,7 +120,8 @@ namespace MemoryProjectFull
 
             Thickness margins = new Thickness();
 
-            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * 5 / 2);
+            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeX + cardMargins * 2) * xAmount / 2f);
+            margins.Left = (MainWindow.SCREEN_WIDTH / 2) - ((cardSizeY + cardMargins * 2) * yAmount / 2f);
 
             this.Margin = margins;
             for (int i = 0; i < xAmount; i++)
@@ -256,7 +257,7 @@ namespace MemoryProjectFull
                     message[i] = cardData[i - 2];
                 }
 
-                Run(message, cardSizeX, cardSizeY);
+         //       Run(message, cardSizeX, cardSizeY);
                 _OnGridInit.send(message);
             }
         }
@@ -279,7 +280,7 @@ namespace MemoryProjectFull
                 for (int y = 0; y < sizeY; y++)
                 {
                     // unpack data
-                    string[] dataPack = data[2].Split(';');
+                    string[] dataPack = data[dataCount].Split(';');
                     // get url and id
                     string imageUrl = dataPack[0];
                     int id = int.Parse(dataPack[1]);
