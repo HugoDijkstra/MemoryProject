@@ -25,6 +25,11 @@ namespace NewMemoryGame{
         }
 
         private void Turn(string[] _data){
+
+            if (_data[1] == "1") {
+                gamepanel.RemoveCard(int.Parse(_data[2]));
+            }
+
             Console.WriteLine("NEXT TUNR!!!!");
             if (int.Parse(_data[0]) == NetworkHandler.getInstance().networkID){
                 gamepanel.Activate();
@@ -39,7 +44,12 @@ namespace NewMemoryGame{
 
         private void EndTurn(Object _sender, GamePanel.OnClickDoneArgs _onClickDoneArgs){
             Console.WriteLine("END TUNR!!!!");
-            nxtTrnCmd.send(players.Find(x => x.ID == NetworkHandler.getInstance().networkID).nextID.ToString());
+
+            string userID = players.Find(x => x.ID == NetworkHandler.getInstance().networkID).nextID.ToString();
+            string correct = _onClickDoneArgs.Correct ? "1" : "0";
+            string cardID = _onClickDoneArgs.firstCard.ID.ToString();
+
+            nxtTrnCmd.send(new string[3] { userID, correct, cardID });
         }
 
         public List<Player> getPlayers()
