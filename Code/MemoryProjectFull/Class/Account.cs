@@ -14,7 +14,17 @@ public class Account{
     public static Score score;
 
     public static void Load() {
-        createDummyAccount();
+        string autologin = MainConfig.GetGroup("account").GetEntry("autologin").GetValue<string>();
+
+        if (autologin == null || autologin == "0"){
+            createDummyAccount();
+        }
+        else{
+            string name = MainConfig.GetGroup("account").GetEntry("name").GetValue<string>();
+            string password = MainConfig.GetGroup("account").GetEntry("password").GetValue<string>();
+
+            login(name, password, true);
+        }
     }
 
     public static void save() {
@@ -29,8 +39,15 @@ public class Account{
         MemoryDatabase.database.UpdateDataToTableFilter("users", "id = '" + id.ToString() + "'", userData);
     }
 
-    public static void login(string _name, string _password) {
+    public static void login(string _name, string _password, bool _autologin) {
         if (MemoryDatabase.database.CheckTableExistence("users")) {
+            if (_autologin) {
+                MainConfig.GetGroup("account").GetEntry("autologin").SetValue("1");
+                MainConfig.GetGroup("account").GetEntry("name").SetValue(_name);
+                MainConfig.GetGroup("account").GetEntry("password").SetValue(_password);
+                MainConfig.Save();
+            }
+
             string compactData = MemoryDatabase.database.GetDataFromTableFilter("users", "name='" + _name + "' && password='" + _password + "'");
             string[] data = compactData.Split(',');
 

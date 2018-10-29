@@ -53,6 +53,17 @@ public class UIFactory {
 
         return t;
     }
+
+    public static CheckBox CreateCheckBox(string _message, Thickness _margin, Point _size, bool _autoToggle = false) {
+        CheckBox c = new CheckBox();
+        c.Content = _message;
+        c.Margin = _margin;
+        c.Width = _size.X;
+        c.Height = _size.Y;
+        c.IsChecked = _autoToggle;
+
+        return c;
+    }
 }
 
 public enum UIPlacerMode {

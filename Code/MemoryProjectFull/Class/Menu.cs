@@ -9,8 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-class Menu : Canvas
-{
+class Menu : PanelBase{
 
     private Button b_login;
 
@@ -31,37 +30,53 @@ class Menu : Canvas
 
     private LoginPanel _panel;
 
-    public Menu() : base()
+    public Menu(int _width, int _height) : base(_width, _height)
     {
 
-        _startGameCommand = new NetworkCommand("G:START", (x) =>
-        {
+        _startGameCommand = new NetworkCommand("G:START", (x) => {
             this.Dispatcher.Invoke(() => { lobbyManager.startGame(); });
         }, false, true);
 
+        // login pannel
         _panel = new LoginPanel(300, 500);
         _panel.setBackground(Brushes.Gray);
-        UIPlacer.Center(UIPlacerMode.center, 0, _panel);
+        this.Center(UIPlacerMode.center, 0, _panel);
+        _panel.rescale();
 
-        b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) =>
-        {
+        // highscore panel
+        //HighscorePanel highscorePanel = new HighscorePanel(300, 300);
+        //this.Children.Add(highscorePanel);
+        //UIPlacer.Center(UIPlacerMode.center, 0, highscorePanel);
 
-            if (this.Children.Contains(_panel))
-            {
-                this.Children.Remove(_panel);
+        // player displays
+        //PlayerInfo info = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopLeft, 20);
+        //PlayerInfo info1 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopRight, 20);
+        //PlayerInfo info2 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomLeft, 20);
+        //PlayerInfo info3 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomRight, 20);
+
+        //this.Children.Add(info);
+        //this.Children.Add(info1);
+        //this.Children.Add(info2);
+        //this.Children.Add(info3);
+
+
+        b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) =>{
+
+            if (this.Children.Contains(_panel)){
+                this.removeChild(_panel);
             }
             else
             {
-                this.Children.Add(_panel);
+                this.addChild(_panel);
             }
 
         });
-        this.Children.Add(b_login);
+        this.addChild(b_login);
 
         UIPlacer.CenterLeft(UIPlacerMode.top, 5, b_login);
 
         tb_nameInput = UIFactory.CreateTextBox(new Thickness(), new Point(200, 30), 20);
-        this.Children.Add(tb_nameInput);
+        this.addChild(tb_nameInput);
 
         b_name = UIFactory.CreateButton("Confirm Name", new Thickness(), new Point(200, 50), (x, y) =>
         {
@@ -72,18 +87,14 @@ class Menu : Canvas
 
             tb_nameText.Text = tb_nameInput.Text;
 
-            this.Children.Remove(tb_nameInput);
-            this.Children.Remove(b_name);
+            this.removeChild(tb_nameInput, b_name);
+            this.addChild(tb_nameText, b_client, b_host);
 
-            this.Children.Add(tb_nameText);
-            this.Children.Add(b_client);
-            this.Children.Add(b_host);
-
-            UIPlacer.Center(UIPlacerMode.center, 3, tb_nameText, b_host, b_client);
+            this.Center(UIPlacerMode.center, 3, tb_nameText, b_host, b_client);
         });
 
-        this.Children.Add(b_name);
-        UIPlacer.Center(UIPlacerMode.center, 3, tb_nameInput, b_name);
+        this.addChild(b_name);
+        this.Center(UIPlacerMode.center, 3, tb_nameInput, b_name);
 
         tb_nameText = UIFactory.CreateTextBlock("NULL", new Thickness(), new Point(200, 50), 20);
 
@@ -101,25 +112,12 @@ class Menu : Canvas
         {
             _startGameCommand.send("");
         });
-        HighscorePanel highscorePanel = new HighscorePanel(300, 300);
-        this.Children.Add(highscorePanel);
-        UIPlacer.Center(UIPlacerMode.center, 0, highscorePanel);
-
-        PlayerInfo info = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopLeft, 20);
-        PlayerInfo info1 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopRight, 20);
-        PlayerInfo info2 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomLeft, 20);
-        PlayerInfo info3 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomRight, 20);
-
-        this.Children.Add(info);
-        this.Children.Add(info1);
-        this.Children.Add(info2);
-        this.Children.Add(info3);
     }
 
     public void start(bool _isHost)
     {
-        this.Children.Remove(b_host);
-        this.Children.Remove(b_client);
+        this.removeChild(b_host);
+        this.removeChild(b_client);
 
         if (_isHost)
         {
@@ -150,18 +148,18 @@ class Menu : Canvas
 
         lobbyManager.OnStart += (x) =>
         {
-            this.Children.Remove(b_start);
+            this.removeChild(b_start);
 
             gamepanel = new GamePanel(5, 4, 100, 200, "cats"); // init the game panel
-            this.Children.Add(gamepanel);
+            this.removeChild(gamepanel);
 
             turnManager = new TurnManager(x, gamepanel);
         };
 
         if (NetworkHandler.getInstance().isHost())
         {
-            this.Children.Add(b_start);
-            UIPlacer.Center(UIPlacerMode.center, 3, b_start);
+            this.addChild(b_start);
+            this.Center(UIPlacerMode.center, 3, b_start);
         }
     }
 

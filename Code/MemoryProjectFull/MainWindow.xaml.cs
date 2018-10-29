@@ -66,7 +66,7 @@ namespace MemoryProjectFull
             //tableData.Add("loses", "0");
             //MemoryDatabase.database.AddDataToTable("users", tableData);
 
-            this.AddChild(new Menu());
+            this.AddChild(new Menu(SCREEN_WIDTH, SCREEN_HEIGHT));
         }
     }
 }

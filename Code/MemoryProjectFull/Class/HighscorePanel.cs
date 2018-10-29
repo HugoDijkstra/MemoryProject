@@ -10,12 +10,11 @@ namespace MemoryProjectFull
 {
     public class HighscorePanel : PanelBase
     {
+        
         TextBlock scores;
         Button backButton;
         public HighscorePanel(int _width, int _height) : base(_width, _height)
         {
-
-
             string usersString = MemoryDatabase.database.GetDataFromTable("users", "name");
             string winsString = MemoryDatabase.database.GetDataFromTable("users", "wins");
             string lossesString = MemoryDatabase.database.GetDataFromTable("users", "losses");
