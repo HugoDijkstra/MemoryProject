@@ -56,13 +56,13 @@ namespace MemoryProjectFull
                 MemoryDatabase.database.CreateTable("users", paramList);
             }
 
-            SortedList<string, string>  tableData = new SortedList<string, string>();
-            tableData.Add("id", "0");
-            tableData.Add("name", "jan");
-            tableData.Add("password", "pa22word");
-            tableData.Add("wins", "0");
-            tableData.Add("loses", "0");
-            MemoryDatabase.database.AddDataToTable("users", tableData);
+            //SortedList<string, string>  tableData = new SortedList<string, string>();
+            //tableData.Add("id", "0");
+            //tableData.Add("name", "jan");
+            //tableData.Add("password", "pa22word");
+            //tableData.Add("wins", "0");
+            //tableData.Add("loses", "0");
+            //MemoryDatabase.database.AddDataToTable("users", tableData);
 
             this.AddChild(new Menu());
         }
