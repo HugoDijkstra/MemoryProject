@@ -23,6 +23,7 @@ namespace MemoryProjectFull
         private int gridSizeX;
         private int gridSizeY;
 
+        bool firstRun;
         bool firstCardClicked;
 
         OnClickDoneArgs doneArgs;
@@ -33,6 +34,9 @@ namespace MemoryProjectFull
         DispatcherTimer destroyAfterFlipTimer;
         Card waitForFlip;
 
+        /// <summary>
+        /// The cards on the field
+        /// </summary>
         Card[,] cards;
 
         bool localPaused;
@@ -96,6 +100,10 @@ namespace MemoryProjectFull
             Card.callback = null;
         }
 
+        /// <summary>
+        /// Handle on click callback
+        /// </summary>
+        /// <param name="c"></param>
         private void HandleCallback(Card c)
         {
 
@@ -116,6 +124,15 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Build the actual game grid
+        /// </summary>
+        /// <param name="cards">The cards for the game</param>
+        /// <param name="xAmount">amount of cards in the widht</param>
+        /// <param name="yAmount">amount of cards in height</param>
+        /// <param name="cardSizeX">size of the card</param>
+        /// <param name="cardSizeY">size of the card</param>
+        /// <param name="cardMargins">space between the cards</param>
         public void Build(Card[,] cards, int xAmount, int yAmount, int cardSizeX, int cardSizeY, int cardMargins)
         {
             //Cards.Count() needs to be more or equale too (x * y)
@@ -156,11 +173,17 @@ namespace MemoryProjectFull
             localPaused = false;
         }
 
+        /// <summary>
+        /// Activate the grid so the player can use it
+        /// </summary>
         public void Activate()
         {
             localPaused = false;
         }
 
+        /// <summary>
+        /// deactivate the grid so the player can't use it
+        /// </summary>
         public void Deactivate()
         {
             localPaused = true;
@@ -169,7 +192,7 @@ namespace MemoryProjectFull
 
         ///TODO documentation
         /// <summary>
-        /// 
+        /// handle the card being clicked
         /// </summary>
         /// <param name="c"></param>
         private void CardClicked(Card c)
@@ -194,7 +217,6 @@ namespace MemoryProjectFull
                     currentlyFlippingB = doneArgs.secondCard;
 
                     waitForFlip = currentlyFlippingB;
-                    Deactivate();
                     flipTimer.Tick += FlipTimer_Tick;
                 }
                 waitForFlip = currentlyFlippingB;
@@ -204,6 +226,9 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Wait until the card is flipped, then flip back
+        /// </summary>
         private void FlipTimer_Tick(object sender, EventArgs e)
         {
             if (!waitForFlip.IsFlipping())
@@ -214,14 +239,28 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Handles the removal of cards
+        /// </summary>
+        /// <param name="id"></param>
         public void RemoveCard(int id)
         {
             removeCardID = id;
+            firstRun = true;
             this.Dispatcher.Invoke(() => { destroyAfterFlipTimer.Tick += DestroyTimer_Tick; });
         }
 
+        /// <summary>
+        /// Destroys the cards when they are done flipping
+        /// </summary>
         public void DestroyTimer_Tick(object sender, EventArgs e)
         {
+            if (firstRun)
+            {
+                firstRun = false;
+                return;
+            }
+
             if (!waitForFlip.IsFlipping())
             {
                 for (int x = 0; x < gridSizeX; x++)
@@ -238,9 +277,8 @@ namespace MemoryProjectFull
             return childerenCount <= 0;
         }
 
-        ///TODO documentation
         /// <summary>
-        /// 
+        /// On click handler
         /// </summary>
         /// <param name="e"></param>
         protected virtual void OnClickDone(OnClickDoneArgs e)
@@ -252,6 +290,9 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Onclick args
+        /// </summary>
         public class OnClickDoneArgs : EventArgs
         {
             public Card firstCard;
@@ -259,8 +300,19 @@ namespace MemoryProjectFull
             public bool Correct;
         }
 
+        /// <summary>
+        /// Onclickdone eventhandler
+        /// </summary>
         public event EventHandler<OnClickDoneArgs> onClickDone;
 
+        /// <summary>
+        /// handles the starting of the game
+        /// </summary>
+        /// <param name="x">amount of cards horizontal</param>
+        /// <param name="y">amount of cards vertical</param>
+        /// <param name="cardSizeX">size of the cards horizontal</param>
+        /// <param name="cardSizeY">size of the cards vertical</param>
+        /// <param name="theme">The chosen theme for the game</param>
         public void initRun(int x, int y, int cardSizeX, int cardSizeY, string theme)
         {
             if (NetworkHandler.getInstance().isHost())
@@ -296,6 +348,12 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Handle the prebuilding of the deck
+        /// </summary>
+        /// <param name="data">The urls for the loading of images</param>
+        /// <param name="cardSizeX">size of the cards horizontal</param>
+        /// <param name="cardSizeY">size of the cards vertical</param>
         public void Run(string[] data, int cardSizeX, int cardSizeY)
         {
 
@@ -329,58 +387,9 @@ namespace MemoryProjectFull
                 }
             }
 
-            Thickness margins = new Thickness();
-
             Build(cards, sizeX, sizeY, cardSizeX, cardSizeY, 10);
         }
-
-        ///TODO documentation
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="cardSizeX"></param>
-        /// <param name="cardSizeY"></param>
-        /// <param name="theme"></param>
-        public void Run(int x, int y, int cardSizeX, int cardSizeY, string theme)
-        {
-            cards = new Card[x, y];
-            List<BitmapImage> bitmapImages = ImageGetter.GetImagesByTheme(theme, x * y, cardSizeX);
-            int image = 1;
-            Card.BackImage = bitmapImages[0];
-            List<Card> cardEntries = new List<Card>();
-            for (int i = 0; i < (x * y) / 2; i++)
-            {
-                cardEntries.Add(new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]));
-                cardEntries.Add(new Card(image, new Size(cardSizeX, cardSizeY), new Point(0, 0), bitmapImages[image]));
-                image++;
-            }
-            List<int> cardOrder = new List<int>();
-
-            for (int i = 0; i < cardEntries.Count; i++)
-            {
-                cardOrder.Add(i);
-            }
-            Console.WriteLine(cardOrder.Count);
-
-            ExtensionMethods.Shuffle(cardOrder);
-
-            int index = 0;
-            for (int i = 0; i < x; i++)
-            {
-                for (int j = 0; j < y; j++)
-                {
-                    cards[i, j] = cardEntries[cardOrder[index]];
-                    index++;
-                }
-            }
-
-            Build(cards, x, y, cardSizeX, cardSizeY, 10);
-        }
-
     }
-
     public static class ExtensionMethods
     {
         public static void Shuffle<T>(this IList<T> list)

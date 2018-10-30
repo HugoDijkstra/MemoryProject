@@ -12,6 +12,12 @@ namespace MemoryProjectFull
 {
     class ImageGetter
     {
+        /// <summary>
+        /// Get image urls by theme
+        /// </summary>
+        /// <param name="theme"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         public static List<string> GetUrlsByTheme(string theme, int amount)
         {
             List<string> returnValue = new List<string>();
@@ -65,6 +71,14 @@ namespace MemoryProjectFull
             }
             return returnValue;
         }
+
+        /// <summary>
+        /// Get images by theme
+        /// </summary>
+        /// <param name="theme"></param>
+        /// <param name="amount"></param>
+        /// <param name="wantedWidht"></param>
+        /// <returns></returns>
         public static List<BitmapImage> GetImagesByTheme(string theme, int amount, int wantedWidht)
         {
             List<BitmapImage> returnValue = new List<BitmapImage>();
@@ -119,6 +133,12 @@ namespace MemoryProjectFull
             return returnValue;
         }
 
+        /// <summary>
+        /// Get an image from the web
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="decodeWidth"></param>
+        /// <returns></returns>
         public static BitmapImage GetImageFromWeb(string url, int decodeWidth)
         {
             if (!url.Contains("http"))
@@ -136,31 +156,5 @@ namespace MemoryProjectFull
             }
         }
 
-        public static List<BitmapImage> GetImagesFromFolder(string path)
-        {
-            List<BitmapImage> returnValue = new List<BitmapImage>();
-
-            try
-            {
-                string[] filenames = Directory.GetFiles(path);
-                foreach (string filePath in filenames)
-                {
-                    try
-                    {
-                        BitmapImage image = new BitmapImage();
-                        returnValue.Add(image);
-                    }
-                    catch (System.Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-            }
-            catch (System.Exception e)
-            {
-                Console.Write(e.ToString());
-            }
-            return returnValue;
-        }
     }
 }
