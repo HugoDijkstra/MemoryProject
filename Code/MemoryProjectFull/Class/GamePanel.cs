@@ -30,11 +30,14 @@ namespace MemoryProjectFull
         Card currentlyFlippingA, currentlyFlippingB;
 
         DispatcherTimer flipTimer;
+        DispatcherTimer destroyAfterFlipTimer;
         Card waitForFlip;
 
         Card[,] cards;
 
         bool localPaused;
+
+        int removeCardID;
 
         /// <summary>
         /// Constructor for the gamepanel that that creates the card and grid with set parameters
@@ -46,7 +49,11 @@ namespace MemoryProjectFull
         public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
             flipTimer = new DispatcherTimer();
+            destroyAfterFlipTimer = new DispatcherTimer();
             flipTimer.Start();
+            destroyAfterFlipTimer.Start();
+
+            removeCardID = 0;
             // for networking (i need the size of the grid for the for loop search, can be fixed with array x,y in card class)
             gridSizeX = widht;
             gridSizeY = height;
@@ -207,15 +214,19 @@ namespace MemoryProjectFull
 
         public void RemoveCard(int id)
         {
-            for (int x = 0; x < gridSizeX; x++)
+            removeCardID = id;
+            this.Dispatcher.Invoke(() => { destroyAfterFlipTimer.Tick += DestroyTimer_Tick; });
+        }
+
+        public void DestroyTimer_Tick(object sender, EventArgs e)
+        {
+            if (!waitForFlip.IsFlipping())
             {
-                for (int y = 0; y < gridSizeY; y++)
-                {
-                    if (cards[x, y].ID == id)
-                    {
-                        this.Dispatcher.Invoke(() => { Children.Remove((Border)(cards[x, y].Parent)); });
-                    }
-                }
+                for (int x = 0; x < gridSizeX; x++)
+                    for (int y = 0; y < gridSizeY; y++)
+                        if (cards[x, y].ID == removeCardID)
+                            Children.Remove((Border)(cards[x, y].Parent));
+                destroyAfterFlipTimer.Tick -= DestroyTimer_Tick;
             }
         }
 
