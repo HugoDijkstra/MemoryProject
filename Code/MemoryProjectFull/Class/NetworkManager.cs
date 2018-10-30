@@ -27,10 +27,6 @@ public enum NetworkType {
     Client
 }
 
-public interface INetworkListener {
-    void OnRecieveCommand(string _command, string[] _data);
-}
-
 // G:NCON,0,bob
 
 public class NetworkCommand{
@@ -118,7 +114,7 @@ public class NetworkHandler {
     NetworkCommand _serverDisconnect;
 
     /// <summary>
-    /// constructor of network handler
+    /// constructor
     /// </summary>
     public NetworkHandler() {
         _serverCommands = new List<NetworkCommand>();
@@ -174,43 +170,78 @@ public class NetworkHandler {
         _serverCommands.Add(_serverDisconnect);
     }
 
+    /// <summary>
+    /// deconstructor
+    /// </summary>
     ~NetworkHandler() {
         this.terminate();
     }
 
+    /// <summary>
+    /// init function
+    /// </summary>
+    /// <param name="_id">network id</param>
     public void init(int _id) {
         _serverInit.callback?.Invoke(new string[1] { _id.ToString() });
     }
 
+    /// <summary>
+    /// get instance function
+    /// </summary>
+    /// <returns>instance of class</returns>
     public static NetworkHandler getInstance() {
         if (_instance == null) {
             _instance = new NetworkHandler();
         }
         return _instance;
     }
+    
+    /// <summary>
+    /// add new command
+    /// </summary>
+    /// <param name="_command">network command</param>
     public void addCommand(NetworkCommand _command) {
         if (!_cleintCommands.Contains(_command)) // <-- can be removed???
             _cleintCommands.Add(_command);
     }
 
+    /// <summary>
+    /// remove command
+    /// </summary>
+    /// <param name="_command">network command</param>
     public void removeCommmand(NetworkCommand _command) {
         if (_cleintCommands.Contains(_command)) // <-- can be removed???
             _cleintCommands.Remove(_command);
     }
 
+    /// <summary>
+    /// get if this is host
+    /// </summary>
+    /// <returns>is host</returns>
     public bool isHost() {
         return NetworkManager.getInstance().networkType == NetworkType.Host;
     }
 
+    /// <summary>
+    /// request a resync
+    /// </summary>
     public void requestResync() {
         _serverSyncRequest.send(new string[1] { networkID.ToString() });
     }
 
+    /// <summary>
+    /// terminate
+    /// </summary>
     public void terminate() {
         _serverCommands.Clear();
         _cleintCommands.Clear();
     }
 
+    /// <summary>
+    /// on recieve command
+    /// </summary>
+    /// <param name="_command">command id</param>
+    /// <param name="_data">command data</param>
     public void onRecieveCommand(string _command, string[] _data){
         for (int i = 0; i < _serverCommands.Count(); i++){
             if (_serverCommands[i].key == _command) {
@@ -239,6 +270,9 @@ public class NetworkHandler {
 
 }
 
+/// <summary>
+/// NetworkManager class
+/// </summary>
 public class NetworkManager {
     private static NetworkManager _instance;
     private static int _uniqueID;
@@ -256,17 +290,26 @@ public class NetworkManager {
 
     public NetworkType networkType;
 
+    /// <summary>
+    /// constructor
+    /// </summary>
     private NetworkManager() {
         _clientConnections = new List<ClientConnection>();
         networkType = NetworkType.None;
         _uniqueID = 0;
     }
 
+    /// <summary>
+    /// deconstructor
+    /// </summary>
     ~NetworkManager() {
         this.terminate();
     }
 
-    // get instance of network manager
+    /// <summary>
+    /// get instance of class
+    /// </summary>
+    /// <returns>the instance</returns>
     public static NetworkManager getInstance() {
         if (_instance == null) {
             _instance = new NetworkManager();
@@ -274,10 +317,25 @@ public class NetworkManager {
         return _instance;
     }
 
+    /// <summary>
+    /// create a connection
+    /// </summary>
+    /// <param name="_type">network type</param>
+    /// <param name="_ip">ip</param>
+    /// <param name="_port">port</param>
+    /// <param name="_OnInitialized">callback</param>
     public void create(NetworkType _type, string _ip, int _port, Action<int> _OnInitialized) {
         create(_type, _ip, _port, _OnInitialized, 16384);
     }
 
+    /// <summary>
+    /// create a connection
+    /// </summary>
+    /// <param name="_type">network type</param>
+    /// <param name="_ip">ip</param>
+    /// <param name="_port">port</param>
+    /// <param name="_OnInitialized">callback</param>
+    /// <param name="_bufferSize">buffer size</param>
     public void create(NetworkType _type, string _ip, int _port, Action<int> _OnInitialized, int _bufferSize) {
         networkType = _type;
 
@@ -325,10 +383,20 @@ public class NetworkManager {
         }
     }
 
+    /// <summary>
+    /// get all client connections
+    /// </summary>
+    /// <returns></returns>
     public ClientConnection[] getClientConnections() {
         return _clientConnections.ToArray();
     }
 
+    /// <summary>
+    /// send targeted command
+    /// </summary>
+    /// <param name="_id">cleint id</param>
+    /// <param name="_command">network command</param>
+    /// <param name="_data">command data</param>
     public void sendTargetCommand(int _id, NetworkCommand _command, string[] _data) {
         int length = _clientConnections.Count;
         for (int i = 0; i < length; i++){
@@ -340,11 +408,20 @@ public class NetworkManager {
         }
     }
 
+    /// <summary>
+    /// get if client is host
+    /// </summary>
+    /// <returns>is host</returns>
     private bool isHost() {
         return networkType == NetworkType.Host;
     }
 
-    // format 
+    /// <summary>
+    /// format the command
+    /// </summary>
+    /// <param name="_id">command id</param>
+    /// <param name="_data">command data</param>
+    /// <returns></returns>
     private string formatCommand(string _id, string[] _data) {
         string message = _id + ",";
         for (int i = 0; i < _data.Length; i++){
@@ -356,7 +433,11 @@ public class NetworkManager {
         return message;
     }
 
-    // send message to all clients
+    /// <summary>
+    /// send command to all clients
+    /// </summary>
+    /// <param name="_id">command id</param>
+    /// <param name="_data">command data</param>
     public void send(string _id, string[] _data) {
         // format data
         string message = formatCommand(_id, _data);
@@ -379,8 +460,10 @@ public class NetworkManager {
             _clientConnection.send(message);
         }
     }
-
-    // stop connection with all clients and close thread
+    
+    /// <summary>
+    /// terminate
+    /// </summary>
     public void terminate() {
         NetworkHandler.getInstance().OnClientDisconection += OnClientDisconection;
 
@@ -401,7 +484,10 @@ public class NetworkManager {
         }
     }
 
-    // recieve data from host
+    /// <summary>
+    /// recieve data callback
+    /// </summary>
+    /// <param name="_message">command data compact</param>
     private void recieveData(string _message) {
         string[] array = _message.Split(',');
         string command = array[0];
@@ -413,7 +499,9 @@ public class NetworkManager {
         OnRecieveCommand?.Invoke(command, data);
     }
 
-    // on client connect
+    /// <summary>
+    /// on client connection callback
+    /// </summary>
     private void onClientConnect() {
         while (true) { 
             TcpClient client = _host.AcceptTcpClient();
@@ -440,13 +528,20 @@ public class NetworkManager {
         }
     }
     
+    /// <summary>
+    /// disconect from client
+    /// </summary>
+    /// <param name="_id">client id</param>
     private void OnClientDisconection(int _id) {
         ClientConnection client = _clientConnections.Find(x => _id == x.networkID);
         if (client != null)
             terminateClient(client);
     }
 
-    // on terminate client
+    /// <summary>
+    /// termiante client
+    /// </summary>
+    /// <param name="c">client</param>
     private void terminateClient(ClientConnection c) {
         if (isHost()) {
             int id = c.networkID;
@@ -472,6 +567,11 @@ public class ClientConnection{
 
     private Thread _clientListener;
 
+    /// <summary>
+    /// constructor
+    /// </summary>
+    /// <param name="_tcpC">tcp client</param>
+    /// <param name="_bufferSize">buffer size</param>
     public ClientConnection(TcpClient _tcpC, int _bufferSize) {
         _tcpClient = _tcpC;
         _stream = _tcpClient.GetStream();
@@ -482,15 +582,20 @@ public class ClientConnection{
         _clientListener.Start();
     }
 
-    // send messages to the server
+    /// <summary>
+    /// send data
+    /// </summary>
+    /// <param name="_message">data</param>
     public void send(string _message) {
         if(_tcpClient != null) { 
             byte[] byteMessage = Encoding.ASCII.GetBytes(_message);
             _stream.Write(byteMessage, 0, byteMessage.Length);
         }
     }
-    
-    // listen to the server and prosses the messages
+
+    /// <summary>
+    /// listen to the server and prosses the messages
+    /// </summary>
     private void listen() {
         string message = "";
         int length = 0;
@@ -510,7 +615,9 @@ public class ClientConnection{
         OnConnectionTerminate?.Invoke(this);
     }
 
-    // stop the connection and abort the thread
+    /// <summary>
+    /// stop the connection and abort the thread
+    /// </summary>
     public void terminate() {
         if (_clientListener.ThreadState == ThreadState.Running){
             _clientListener = null;
