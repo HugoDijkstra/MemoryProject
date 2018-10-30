@@ -39,6 +39,13 @@ namespace MemoryProjectFull
             this.cards = 0;
 
             block = new TextBlock();
+
+            block.Width = size.X - 20;
+            block.Height = size.Y - 20;
+            block.Margin = new Thickness(10);
+
+
+
             this.Children.Add(block);
 
             UpdateBox();
@@ -78,23 +85,23 @@ namespace MemoryProjectFull
             switch (screenLocation)
             {
                 case ScreenLocation.TopLeft:
-                    location.Left = -10;
-                    location.Top = -10;
+                    location.Left = 10;
+                    location.Top = 10;
                     block.TextAlignment = TextAlignment.Left;
                     break;
                 case ScreenLocation.TopRight:
-                    location.Left = MainWindow.SCREEN_WIDTH - (Width - 10);
-                    location.Top = -10;
+                    location.Left = MainWindow.SCREEN_WIDTH - (Width + 10);
+                    location.Top = 10;
                     block.TextAlignment = TextAlignment.Right;
                     break;
                 case ScreenLocation.BottomLeft:
-                    location.Left = -10;
-                    location.Top = MainWindow.SCREEN_HEIGHT - (Height - 10);
+                    location.Left = 10;
+                    location.Top = MainWindow.SCREEN_HEIGHT - (Height + 10);
                     block.TextAlignment = TextAlignment.Left;
                     break;
                 case ScreenLocation.BottomRight:
-                    location.Left = MainWindow.SCREEN_WIDTH - (Width - 10);
-                    location.Top = MainWindow.SCREEN_HEIGHT - (Height - 10);
+                    location.Left = MainWindow.SCREEN_WIDTH - (Width + 10);
+                    location.Top = MainWindow.SCREEN_HEIGHT - (Height + 10);
                     block.TextAlignment = TextAlignment.Right;
                     break;
             }
