@@ -6,9 +6,16 @@ using System.Windows.Media;
 namespace MemoryProjectFull
 {
 
+    /// <summary>
+    /// Wrapper Class for WPF MediaPlayer.
+    /// </summary>
     public class Audio
     {
 
+        /// <summary>
+        /// Initializes a new instance of the Audio class.
+        /// </summary>
+        /// <param name="source">The path of the Audio file to load.</param>
         public Audio(Uri source)
         {
             audio_internal = new MediaPlayer();
@@ -19,6 +26,10 @@ namespace MemoryProjectFull
             IsLooping = false;
         }
 
+        /// <summary>
+        /// Starts audio playback.
+        /// </summary>
+        /// <param name="shouldLoop">Specifies whether the Audio should loop.</param>
         public void Play(bool shouldLoop)
         {
             audio_internal.Stop();
@@ -26,17 +37,28 @@ namespace MemoryProjectFull
             audio_internal.Play();
         }
 
+        /// <summary>
+        /// Pauses audio playback.
+        /// </summary>
         public void Pause()
         {
             audio_internal.Pause();
         }
 
+        /// <summary>
+        /// Stops audio playback.
+        /// </summary>
         public void Stop()
         {
             IsLooping = false;
             audio_internal.Stop();
         }
 
+        /// <summary>
+        /// Callback which runs after the Audio stops playing, causing the Audio to start playing again if looping is enabled.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
         private void MediaEndedCallback(object o, EventArgs e)
         {
             if (IsLooping)
@@ -46,6 +68,9 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Gets or sets if the audio is looping.
+        /// </summary>
         private bool IsLooping
         {
             get;
@@ -56,6 +81,9 @@ namespace MemoryProjectFull
 
     }
 
+    /// <summary>
+    /// A Static Class for managing Audio.
+    /// </summary>
     public static class AudioManager
     {
 
@@ -64,11 +92,21 @@ namespace MemoryProjectFull
             registeredAudios = new Dictionary<string, Audio>();
         }
 
+        /// <summary>
+        /// Determines whether an Audio with the specified name has been registered.
+        /// </summary>
+        /// <param name="name">The name of the Audio to check for.</param>
+        /// <returns>True if the Audio was registered, false otherwise.</returns>
         public static bool IsAudioRegistered(string name)
         {
             return registeredAudios.ContainsKey(name);
         }
 
+        /// <summary>
+        /// Loads a new Audio from the specified file path and registers it under the specified name.
+        /// </summary>
+        /// <param name="name">The name under which to register the Audio.</param>
+        /// <param name="filePath">The path of the audio file.</param>
         public static void RegisterAudio(string name, string filePath)
         {
             try
@@ -84,6 +122,11 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Gets the Audio registered under the specified name.
+        /// </summary>
+        /// <param name="name">The name under which the Audio was registered.</param>
+        /// <returns>The Audio if it was registered, null otherwise.</returns>
         public static Audio GetAudio(string name)
         {
             try
@@ -92,11 +135,19 @@ namespace MemoryProjectFull
             { return null; }
         }
 
+        /// <summary>
+        /// Unregisters the Audio that was registered under the specified name.
+        /// </summary>
+        /// <param name="name">The name of the Audio to unregister.</param>
+        /// <returns>True if the Audio was registered, false otherwise.</returns>
         public static bool UnregisterAudio(string name)
         {
             return registeredAudios.Remove(name);
         }
 
+        /// <summary>
+        /// Stops all currently running Audio.
+        /// </summary>
         public static void StopAll()
         {
             foreach (var entry in registeredAudios)
