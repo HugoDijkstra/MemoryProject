@@ -203,8 +203,6 @@ class Menu : PanelBase{
     }
 
     public void initLoading(){
-        AudioManager.GetAudio("music_game").Play(true);
-        AudioManager.GetAudio("music_menu").Stop(); 
         this.removeChild(b_highscore);
         this.removeChild(b_login);
         this.removeChild(_backgroundGame, tb_namemessage, b_lobbystartgame, tb_ip, b_client, b_host, b_quit, tb_lobbyname, tb_lobbyscore, tb_lobbygenredisplay, tb_lobbygenre, b_loggyconfirmgenre, b_lobbyback, tb_lobbyplayerdisplay);

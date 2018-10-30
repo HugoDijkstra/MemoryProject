@@ -29,7 +29,7 @@ namespace MemoryProjectFull
         {
             InitializeComponent();
 
-            //this.FontFamily = new FontFamily()
+            //this.FontFamily = new FontFamily(new Uri("assets/fonts/font.ttf", UriKind.RelativeOrAbsolute), "game_font");
 
             // add autio
             AudioManager.RegisterAudio("music_menu", "assets/audio/backgroundsong_menu.mp3");
@@ -47,7 +47,6 @@ namespace MemoryProjectFull
             var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
             var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
             var captionHeight = SystemParameters.CaptionHeight;
-
 
             SCREEN_HEIGHT = (int)System.Windows.SystemParameters.PrimaryScreenHeight;
             SCREEN_WIDTH = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
