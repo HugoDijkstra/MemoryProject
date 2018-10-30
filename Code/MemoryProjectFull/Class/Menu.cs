@@ -81,6 +81,7 @@ class Menu : PanelBase{
         _loginPanel.OnLogin += () => {
             b_login.Content = "Logout";
             tb_namemessage.Text = "You are logedin as " + Account.name;
+            this.removeChild(_loginPanel);
         };
 
         string title = Account.isActivateAccount() ? "Logout" : "login";

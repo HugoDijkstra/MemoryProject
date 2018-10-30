@@ -178,8 +178,9 @@ public class LoginPanel : PanelBase {
             userData.Add("name", tb_reg_name.Text);
             userData.Add("password", tb_reg_password.Password);
             userData.Add("wins", "0");
-            userData.Add("loses", "0");
+            userData.Add("losses", "0");
             MemoryDatabase.database.AddDataToTable("users", userData);
+            Account.login(tb_reg_name.Text, tb_reg_password.Password, false, OnLogin);
         }
     }
 }
