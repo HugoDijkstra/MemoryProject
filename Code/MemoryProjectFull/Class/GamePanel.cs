@@ -73,6 +73,7 @@ namespace MemoryProjectFull
 
                     // normaal shit
                     CardClicked(cards[xPos, yPos]);
+                    AudioManager.GetAudio("whoosh_1").Play(false);
                 });
             },
             false, // <-- only accept command with divrent ID then this client (true/false)
