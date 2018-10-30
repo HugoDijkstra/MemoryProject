@@ -17,6 +17,12 @@ namespace NewMemoryGame{
 
         private List<PlayerInfo> playerPanels;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="_players">players list</param>
+        /// <param name="_playerinfo">player info list</param>
+        /// <param name="_gamepanel">game panel</param>
         public TurnManager(Player[] _players, List<PlayerInfo> _playerinfo, GamePanel _gamepanel){
             gamepanel = _gamepanel;
             gamepanel.Deactivate();
@@ -35,6 +41,10 @@ namespace NewMemoryGame{
             };
         }
 
+        /// <summary>
+        /// on next turn network callback
+        /// </summary>
+        /// <param name="_data">command data</param>
         private void Turn(string[] _data){
 
             // on correct card
@@ -70,6 +80,11 @@ namespace NewMemoryGame{
             } 
         }
 
+        /// <summary>
+        /// on end turn callback
+        /// </summary>
+        /// <param name="_sender"></param>
+        /// <param name="_onClickDoneArgs"></param>
         private void EndTurn(Object _sender, GamePanel.OnClickDoneArgs _onClickDoneArgs){
             Console.WriteLine("END TUNR!!!!");
 
@@ -80,6 +95,10 @@ namespace NewMemoryGame{
             nxtTrnCmd.send(new string[3] { userID, correct, cardID });
         }
 
+        /// <summary>
+        /// get list of players
+        /// </summary>
+        /// <returns>players list</returns>
         public List<Player> getPlayers(){
             return players;
         }

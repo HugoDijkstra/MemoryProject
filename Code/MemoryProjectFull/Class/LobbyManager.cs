@@ -16,6 +16,10 @@ class LobbyManager {
     private NetworkCommand _onResync;
     private NetworkCommand _onConnection;
 
+    /// <summary>
+    /// constructor
+    /// </summary>
+    /// <param name="_clientName">user name</param>
     public LobbyManager(string _clientName) {
         global = new List<Client>();
         
@@ -23,6 +27,9 @@ class LobbyManager {
         local = new Client(name, NetworkHandler.getInstance().networkID);
     }
 
+    /// <summary>
+    /// init fucnction
+    /// </summary>
     public void init() {
         _onResync = new NetworkCommand("G:RSYNC", (x) => {
 
@@ -74,6 +81,9 @@ class LobbyManager {
         _onResync.send(NetworkHandler.getInstance().networkID.ToString());
     }
 
+    /// <summary>
+    /// start game function
+    /// </summary>
     public void startGame() { // clean this code or find a way to do it better
         List<Player> players = new List<Player>();
         global.Add(local);
@@ -106,7 +116,11 @@ class LobbyManager {
         OnStart?.Invoke(players.ToArray());
     }
 
-    // add new client to global
+    /// <summary>
+    /// add new client to global
+    /// </summary>
+    /// <param name="_id">client id</param>
+    /// <param name="_name">client name</param>
     private void OnConnect(int _id, string _name) {
         global.Add(new Client(_name, _id));
     }
@@ -116,6 +130,11 @@ class Client {
     public string name;
     public int id;
 
+    /// <summary>
+    /// constructor
+    /// </summary>
+    /// <param name="_name">client name</param>
+    /// <param name="_id">client id</param>
     public Client(string _name, int _id) {
         name = _name;
         id = _id;

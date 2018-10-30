@@ -87,6 +87,7 @@
     <Compile Include="Class\HighscorePanel.cs" />
     <Compile Include="Class\ImageGetter.cs" />
     <Compile Include="Class\LobbyManager.cs" />
+    <Compile Include="Class\loginpanel.cs" />
     <Compile Include="Class\MainConfig.cs" />
     <Compile Include="Class\MCFileHandler.cs" />
     <Compile Include="Class\MemoryConfig.cs" />
