@@ -132,8 +132,9 @@ class Menu : PanelBase{
 
         b_client = UIFactory.CreateButton("Connect To Game", new Thickness(), new Point(200, 50), (x, y) => {
             startGame(false);
+            
         });
-        
+
         b_host = UIFactory.CreateButton("Host Game", new Thickness(), new Point(200, 50), (x, y) => {
             startGame(true);
         });
@@ -261,7 +262,6 @@ class Menu : PanelBase{
                 // display error message
                 return;
             }
-            
         }
 
         NetworkHandler.getInstance().OnLostConnectionToHost += () => { // on lost connection with host callback
