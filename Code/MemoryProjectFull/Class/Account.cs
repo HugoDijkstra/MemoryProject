@@ -40,7 +40,7 @@ public class Account{
         MemoryDatabase.database.UpdateDataToTableFilter("users", "id = '" + id.ToString() + "'", userData);
     }
 
-    public static void login(string _name, string _password, bool _autologin, Action _callback) {
+    public static bool login(string _name, string _password, bool _autologin, Action _callback) {
         if (MemoryDatabase.database.CheckTableExistence("users")) {
             if (_autologin) {
                 MainConfig.GetGroup("account").GetEntry("autologin").SetValue("1");
@@ -58,7 +58,10 @@ public class Account{
 
             isActivate = true;
             _callback?.Invoke();
+            return true;
         }
+
+        return false;
     }
 
     public static void logout() {

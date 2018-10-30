@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -133,11 +134,11 @@ public class LoginPanel : PanelBase {
         tb_reg_name = UIFactory.CreateTextBox(new Thickness(), new Point(250, 30), 20, TextAlignment.Left); // <-- used to create buttons, textboxs and more ( based of a factory google can tell how it workes [fewwy easy])
         tb_reg_password = UIFactory.CreatePasswordBox(new Thickness(), new Point(250, 30), 20);
 
-        b_register = UIFactory.CreateButton("Register", new Thickness(), new Point(250, 50), (x, y) => {
+        b_register = UIFactory.CreateButton("Regist", new Thickness(), new Point(250, 50), (x, y) => {
             regist();
         });
 
-        b_switch = UIFactory.CreateButton("Login To Existing Account", new Thickness(), new Point(250, 30), (x, y) => {
+        b_switch = UIFactory.CreateButton("Register a new account", new Thickness(), new Point(250, 30), (x, y) => {
             if (isSwitched){
                 tb_message.Text = "Login to your account";
                 b_switch.Content = "Regist New Account";
@@ -168,10 +169,34 @@ public class LoginPanel : PanelBase {
     }
 
     private void login() {
-        Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value, OnLogin);
+        if (tb_name.Text == string.Empty || tb_password.Password == string.Empty) {
+            // error message
+            return;
+        }
+
+        if (Regex.IsMatch(tb_name.Text, @"^[\%\/\\\&\?\,\'\;\:\!\-]+$")){
+            // error message
+            return;
+        }
+
+        if (Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value, OnLogin)) {
+            // error message
+            return;
+        }
     }
 
     private void regist() {
+
+        if (tb_reg_name.Text == string.Empty || tb_reg_password.Password == string.Empty) {
+            // error message
+            return;
+        }
+
+        if (Regex.IsMatch("", @"^[\%\/\\\&\?\,\'\;\:\!\-]+$")){
+            // error message
+            return;
+        }
+
         if (MemoryDatabase.database.CheckTableExistence("users") && !MemoryDatabase.database.TableContainsData("users", "name", "'" + tb_reg_name.Text + "'")) {
             SortedList<string, string> userData = new SortedList<string, string>();
             userData.Add("id", "0");
@@ -181,6 +206,11 @@ public class LoginPanel : PanelBase {
             userData.Add("losses", "0");
             MemoryDatabase.database.AddDataToTable("users", userData);
             Account.login(tb_reg_name.Text, tb_reg_password.Password, false, OnLogin);
+        }else {
+            // error message
+            return;
         }
     }
+
+
 }
