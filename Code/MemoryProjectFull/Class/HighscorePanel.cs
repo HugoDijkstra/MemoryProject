@@ -10,7 +10,7 @@ namespace MemoryProjectFull
 {
     public class HighscorePanel : PanelBase
     {
-        
+
         TextBlock scores;
         Button backButton;
         public HighscorePanel(int _width, int _height) : base(_width, _height)
@@ -45,14 +45,10 @@ namespace MemoryProjectFull
 
             Random random = new Random();
 
-            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
-            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
-            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
-            usrs.Add(new User() { name = "bob" + random.Next(), losses = random.Next() % 20, wins = random.Next() % 20 });
-            usrs.Sort((a, b) => { return b.winlose.CompareTo(a.winlose); });
-            string highscores = "";
+            usrs.Sort((a, b) => { return b.wins.CompareTo(a.wins); });
+            string highscores = "\nName   :   Wins  :   Losses\n";
 
-            for (int i = 0; i < usrs.Count; i++)
+            for (int i = 0; i < usrs.Count && i < 10; i++)
             {
                 highscores += usrs[i].ToString();
             }
