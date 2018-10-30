@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace MemoryProjectFull
 {
@@ -44,7 +45,7 @@ namespace MemoryProjectFull
 
             block.FontSize = fontSize;
 
-            this.Background = new SolidColorBrush(new Color { R = 0, G = 255, B = 255, A = 255 });
+            this.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri("assets/images/background_panel.png", UriKind.RelativeOrAbsolute))) };
 
             UpdateScreenLocation();
         }
@@ -77,23 +78,23 @@ namespace MemoryProjectFull
             switch (screenLocation)
             {
                 case ScreenLocation.TopLeft:
-                    location.Left = 10;
-                    location.Top = 10;
+                    location.Left = -10;
+                    location.Top = -10;
                     block.TextAlignment = TextAlignment.Left;
                     break;
                 case ScreenLocation.TopRight:
-                    location.Left = MainWindow.SCREEN_WIDTH - (Width + 10);
-                    location.Top = 10;
+                    location.Left = MainWindow.SCREEN_WIDTH - (Width - 10);
+                    location.Top = -10;
                     block.TextAlignment = TextAlignment.Right;
                     break;
                 case ScreenLocation.BottomLeft:
-                    location.Left = 10;
-                    location.Top = MainWindow.SCREEN_HEIGHT - (Height + 10);
+                    location.Left = -10;
+                    location.Top = MainWindow.SCREEN_HEIGHT - (Height - 10);
                     block.TextAlignment = TextAlignment.Left;
                     break;
                 case ScreenLocation.BottomRight:
-                    location.Left = MainWindow.SCREEN_WIDTH - (Width + 10);
-                    location.Top = MainWindow.SCREEN_HEIGHT - (Height + 10);
+                    location.Left = MainWindow.SCREEN_WIDTH - (Width - 10);
+                    location.Top = MainWindow.SCREEN_HEIGHT - (Height - 10);
                     block.TextAlignment = TextAlignment.Right;
                     break;
             }

@@ -129,10 +129,6 @@ public class LoginPanel : PanelBase {
         b_login = UIFactory.CreateButton("Login", new Thickness(), new Point(250, 50), (x, y) =>{
             login();
         });
-        ImageBrush i = new ImageBrush(new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), System.AppDomain.CurrentDomain.BaseDirectory + "\\assets\\images\\ui_button.png")));
-        b_login.Background = i;
-        b_login.BorderThickness = new Thickness();
-        
 
         tb_reg_name = UIFactory.CreateTextBox(new Thickness(), new Point(250, 30), 20, TextAlignment.Left); // <-- used to create buttons, textboxs and more ( based of a factory google can tell how it workes [fewwy easy])
         tb_reg_password = UIFactory.CreatePasswordBox(new Thickness(), new Point(250, 30), 20);

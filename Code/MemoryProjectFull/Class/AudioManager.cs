@@ -21,6 +21,7 @@ namespace MemoryProjectFull
 
         public void Play(bool shouldLoop)
         {
+            audio_internal.Stop();
             IsLooping = shouldLoop;
             audio_internal.Play();
         }

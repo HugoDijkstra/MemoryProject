@@ -16,7 +16,7 @@ public class UIFactory {
         b.Margin = _margin;
         b.Width = _size.X;
         b.Height = _size.Y;
-        b.Click += (x, y) => { _callback(x, y); };
+        b.Click += (x, y) => { _callback(x, y); AudioManager.GetAudio("button_click").Play(false); };
 
         return b;
     }

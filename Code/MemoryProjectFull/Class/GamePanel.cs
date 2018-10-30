@@ -287,7 +287,7 @@ namespace MemoryProjectFull
 
             // init back card
 
-            Card.BackImage = ImageGetter.GetImageFromWeb("https://upload.wikimedia.org/wikipedia/en/2/2b/Yugioh_Card_Back.jpg", cardSizeX);
+            Card.BackImage = new BitmapImage(new Uri("assets/images/background_card.png", UriKind.RelativeOrAbsolute));
 
             int dataCount = 2;
             for (int x = 0; x < sizeX; x++)

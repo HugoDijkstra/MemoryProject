@@ -29,6 +29,21 @@ namespace MemoryProjectFull
         {
             InitializeComponent();
 
+            //this.FontFamily = new FontFamily()
+
+            // add autio
+            AudioManager.RegisterAudio("music_menu", "assets/audio/backgroundsong_menu.mp3");
+            AudioManager.RegisterAudio("music_game", "assets/audio/button_click.mp3");
+
+            AudioManager.RegisterAudio("button_click", "assets/audio/button_click.mp3");
+            AudioManager.RegisterAudio("whoosh_1", "assets/audio/whoosh_1.mp3");
+            AudioManager.RegisterAudio("whoosh_2", "assets/audio/whoosh_2.mp3");
+            AudioManager.RegisterAudio("notification_1", "assets/audio/notification_1.mp3");
+            AudioManager.RegisterAudio("notification_2", "assets/audio/notification_2.mp3");
+
+            AudioManager.RegisterAudio("card_done", "assets/audio/card_done.mp3");
+            AudioManager.RegisterAudio("card_fail", "assets/audio/card_fail.mp3");
+
             var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
             var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
             var captionHeight = SystemParameters.CaptionHeight;

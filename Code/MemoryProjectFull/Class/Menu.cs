@@ -48,9 +48,10 @@ class Menu : PanelBase{
 
     private LoginPanel _loginPanel;
     private HighscorePanel _highscorePanel;
+    private PanelBase _backgroundGame;
 
-    public Menu(int _width, int _height) : base(_width, _height)
-    {
+    public Menu(int _width, int _height) : base(_width, _height){
+        this.setBackground("assets/images/background_menu.png");
 
         _startGameCommand = new NetworkCommand("G:START", (x) => {
             this.Dispatcher.Invoke(() => { initNone(); lobbyManager.startGame(); });
@@ -60,15 +61,20 @@ class Menu : PanelBase{
             this.Dispatcher.Invoke(() => { tb_lobbygenredisplay.Text = x[0]; });
         });
 
+        // game background
+        _backgroundGame = new PanelBase(MainWindow.SCREEN_WIDTH, MainWindow.SCREEN_HEIGHT);
+        _backgroundGame.setBackground("assets/images/background_game.jpg");
+        this.Center(UIPlacerMode.center, 0, _backgroundGame);
+
         // login pannel
         _loginPanel = new LoginPanel(300, 500);
-        _loginPanel.setBackground("assets/images/ui_button.png");
+        _loginPanel.setBackground("assets/images/background_panel.png");
         this.Center(UIPlacerMode.center, 0, _loginPanel);
         _loginPanel.rescale();
 
         // highscore panel
         _highscorePanel = new HighscorePanel(300, 300);
-        //_highscorePanel.setBackground("assets/images/ui_button.png");
+        _highscorePanel.setBackground("assets/images/background_panel.png");
         this.Center(UIPlacerMode.center, 0, _highscorePanel);
         _highscorePanel.rescale();
         
@@ -162,21 +168,23 @@ class Menu : PanelBase{
     }
 
     public void initMenu(){
+        AudioManager.GetAudio("music_menu").Play(true);
+        AudioManager.GetAudio("music_game").Stop();
         this.removeChild(tb_loadingmessage, b_loadingback);
         this.addChild(b_highscore);
         this.addChild(b_login);
-        this.removeChild(tb_lobbyname, tb_lobbyscore, tb_lobbygenredisplay, tb_lobbygenre, b_loggyconfirmgenre, b_lobbyback, tb_lobbyplayerdisplay, b_lobbystartgame);
+        this.removeChild(_backgroundGame, tb_lobbyname, tb_lobbyscore, tb_lobbygenredisplay, tb_lobbygenre, b_loggyconfirmgenre, b_lobbyback, tb_lobbyplayerdisplay, b_lobbystartgame);
 
         this.addChild(tb_namemessage, tb_ip, b_client, b_host, b_quit);
         this.Center(UIPlacerMode.center, 3, tb_namemessage, tb_ip, b_client, b_host, b_quit);
     }
 
-    public void initLobby() {
+    public void initLobby(){
         _onGengreChange.activate();
         this.removeChild(tb_loadingmessage, b_loadingback);
         this.removeChild(b_highscore);
         this.removeChild(b_login);
-        this.removeChild(tb_namemessage, tb_ip, b_client, b_host, b_quit);
+        this.removeChild(_backgroundGame, tb_namemessage, tb_ip, b_client, b_host, b_quit);
 
         if (NetworkHandler.getInstance().isHost()){
             this.addChild(tb_lobbygenre, b_loggyconfirmgenre, b_lobbystartgame);
@@ -195,15 +203,18 @@ class Menu : PanelBase{
     }
 
     public void initLoading(){
+        AudioManager.GetAudio("music_game").Play(true);
+        AudioManager.GetAudio("music_menu").Stop(); 
         this.removeChild(b_highscore);
         this.removeChild(b_login);
-        this.removeChild(tb_namemessage, b_lobbystartgame, tb_ip, b_client, b_host, b_quit, tb_lobbyname, tb_lobbyscore, tb_lobbygenredisplay, tb_lobbygenre, b_loggyconfirmgenre, b_lobbyback, tb_lobbyplayerdisplay);
+        this.removeChild(_backgroundGame, tb_namemessage, b_lobbystartgame, tb_ip, b_client, b_host, b_quit, tb_lobbyname, tb_lobbyscore, tb_lobbygenredisplay, tb_lobbygenre, b_loggyconfirmgenre, b_lobbyback, tb_lobbyplayerdisplay);
 
         this.addChild(tb_loadingmessage, b_loadingback);
     }
 
     public void initNone() {
         this.Children.Clear();
+        this.addChild(_backgroundGame);
     }
 
     public void startGame(bool _isHost){
@@ -275,7 +286,7 @@ class Menu : PanelBase{
 
         lobbyManager.OnStart += (x) => {
             string genre = tb_lobbygenredisplay.Text != "" ? tb_lobbygenredisplay.Text : "cute cats";
-            gamepanel = new GamePanel(5, 4, 100, 200, genre); // init the game panel
+            gamepanel = new GamePanel(5, 4, 120, 200, genre); // init the game panel
             this.addChild(gamepanel);
 
             List<PlayerInfo> playerInfo = new List<PlayerInfo>();
