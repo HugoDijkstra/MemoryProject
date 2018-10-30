@@ -16,38 +16,67 @@ using System.Windows.Navigation;
 
 public class PanelBase : Canvas {
 
+    /// <summary>
+    /// panel base 
+    /// </summary>
+    /// <param name="_width">panel width</param>
+    /// <param name="_height">panel height</param>
     public PanelBase(int _width, int _height) : base() {
         this.Width = _width;
         this.Height = _height;
     }
 
-    // rescaling
+    /// <summary>
+    /// rescale function
+    /// </summary>
     public virtual void rescale() { }
 
-    // backgrounds
+    /// <summary>
+    /// set background
+    /// </summary>
+    /// <param name="_path">file path</param>
     public void setBackground(string _path) {
         this.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri(_path, UriKind.RelativeOrAbsolute))) };
     }
+    /// <summary>
+    /// set background
+    /// </summary>
+    /// <param name="_color">color</param>
     public void setBackground(SolidColorBrush _color) {
         this.Background = _color;
     }
+    /// <summary>
+    /// remove background
+    /// </summary>
     public void removeBackground() {
         this.Background = null;
     }
 
-    // childeren
+    /// <summary>
+    /// add children
+    /// </summary>
+    /// <param name="_elements">children to add</param>
     public void addChild(params FrameworkElement[] _elements) {
         for (int i = 0; i < _elements.Length; i++){
             this.Children.Add(_elements[i]);
         }
     }
+    /// <summary>
+    /// remove children
+    /// </summary>
+    /// <param name="_elements">children to remove</param>
     public void removeChild(params FrameworkElement[] _elements) {
         for (int i = 0; i < _elements.Length; i++){
             this.Children.Remove(_elements[i]);
         }
     }
 
-    // scaling
+    /// <summary>
+    /// center ui
+    /// </summary>
+    /// <param name="_mode">center mode</param>
+    /// <param name="_padding">padding</param>
+    /// <param name="_elements">element to center</param>
     public void Center(UIPlacerMode _mode, int _padding, params FrameworkElement[] _elements){
         int startHeight = _mode == UIPlacerMode.top ? ((int)_elements[0].Height) / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
         int startWidth = MainWindow.SCREEN_WIDTH / 2;
@@ -58,6 +87,12 @@ public class PanelBase : Canvas {
         }
     }
 
+    /// <summary>
+    /// center ui
+    /// </summary>
+    /// <param name="_mode">center mode</param>
+    /// <param name="_padding">padding</param>
+    /// <param name="_elements">element to center</param>
     public void CenterLeft(UIPlacerMode _mode, int _padding, params FrameworkElement[] _elements) {
         int startHeight = _mode == UIPlacerMode.top ? (int)_elements[0].Height / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
         int startWidth = 0;
@@ -68,6 +103,12 @@ public class PanelBase : Canvas {
         }
     }
 
+    /// <summary>
+    /// center ui
+    /// </summary>
+    /// <param name="_mode">center mode</param>
+    /// <param name="_padding">padding</param>
+    /// <param name="_elements">element to center</param>
     public void CenterRigth(UIPlacerMode _mode, int _padding, params FrameworkElement[] _elements) {
         int startHeight = _mode == UIPlacerMode.top ? (int)_elements[0].Height / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
         int startWidth = MainWindow.SCREEN_WIDTH;
@@ -78,13 +119,27 @@ public class PanelBase : Canvas {
         }
     }
 
-    // extra scaling fucntions
+    /// <summary>
+    /// get next height of element
+    /// </summary>
+    /// <param name="_height">current height</param>
+    /// <param name="_mode">center mode</param>
+    /// <param name="_element">element</param>
+    /// <param name="_padding">padding</param>
+    /// <returns>next height</returns>
     private int getNextHeight(int _height, UIPlacerMode _mode, FrameworkElement _element, int _padding = 0) {
         if (_mode == UIPlacerMode.top || _mode == UIPlacerMode.center) {
             return _height + (int)_element.Height + _padding;
         }
         return _height - (int)_element.Height - _padding;
     }
+
+    /// <summary>
+    /// get total height
+    /// </summary>
+    /// <param name="_elements">elements</param>
+    /// <param name="_padding">padding</param>
+    /// <returns>total height</returns>
     private int getTotalHeight(FrameworkElement[] _elements, int _padding = 0) {
         int height = 0;
         for (int i = 0; i < _elements.Length; i++){
@@ -97,120 +152,3 @@ public class PanelBase : Canvas {
     }
 }
 
-public class LoginPanel : PanelBase {
-
-    public Action OnLogin;
-
-    private bool isSwitched;
-
-    private TextBlock tb_message;
-
-    private TextBox tb_name;
-    private PasswordBox tb_password;
-    private CheckBox cb_autologin;
-    private Button b_login;
-
-    private TextBox tb_reg_name;
-    private PasswordBox tb_reg_password;
-    private Button b_register;
-
-
-    private Button b_switch;
-
-    public LoginPanel(int _width, int _height) : base(_width, _height) {
-        isSwitched = false;
-
-        tb_message = UIFactory.CreateTextBlock("Login to your acount", new Thickness(), new Point(250, 60), 20);
-
-        tb_name = UIFactory.CreateTextBox(new Thickness(), new Point(250, 30), 20, TextAlignment.Left); // <-- used to create buttons, textboxs and more ( based of a factory google can tell how it workes [fewwy easy])
-        tb_password = UIFactory.CreatePasswordBox(new Thickness(), new Point(250, 30), 20);
-
-        cb_autologin = UIFactory.CreateCheckBox("Save login credentials?", new Thickness(), new Point(250, 15));
-
-        b_login = UIFactory.CreateButton("Login", new Thickness(), new Point(250, 50), (x, y) =>{
-            login();
-        });
-
-        tb_reg_name = UIFactory.CreateTextBox(new Thickness(), new Point(250, 30), 20, TextAlignment.Left); // <-- used to create buttons, textboxs and more ( based of a factory google can tell how it workes [fewwy easy])
-        tb_reg_password = UIFactory.CreatePasswordBox(new Thickness(), new Point(250, 30), 20);
-
-        b_register = UIFactory.CreateButton("Regist", new Thickness(), new Point(250, 50), (x, y) => {
-            regist();
-        });
-
-        b_switch = UIFactory.CreateButton("Register a new account", new Thickness(), new Point(250, 30), (x, y) => {
-            if (isSwitched){
-                tb_message.Text = "Login to your account";
-                b_switch.Content = "Regist New Account";
-                this.removeChild(tb_reg_name, tb_reg_password, b_register);
-                this.addChild(tb_name, tb_password, cb_autologin, b_login);
-                this.Center(UIPlacerMode.center, 3, tb_message, tb_name, tb_password, cb_autologin, b_login, b_switch); // <-- used to center stuf on screen
-            } else {
-                tb_message.Text = "Register a new account";
-                b_switch.Content = "Login To Existing Account";
-                this.removeChild(tb_name, tb_password, cb_autologin, b_login);
-                this.addChild(tb_reg_name, tb_reg_password, b_register);
-                this.Center(UIPlacerMode.center, 3, tb_message, tb_reg_name, tb_reg_password, b_register, b_switch); // <-- used to center stuf on screen
-            }
-
-            isSwitched = !isSwitched;
-        });
-
-        this.addChild(tb_name, tb_password, b_login, b_switch, tb_message, cb_autologin);
-        this.Center(UIPlacerMode.center, 3, tb_message, tb_name, tb_password, cb_autologin, b_login, b_switch); // <-- used to center stuf on screen
-    }
-
-    public override void rescale()
-    {
-        if (isSwitched)
-            this.Center(UIPlacerMode.center, 3, tb_message, tb_reg_name, tb_reg_password, b_register, b_switch); // <-- used to center stuf on screen
-        else
-            this.Center(UIPlacerMode.center, 3, tb_message, tb_name, tb_password, cb_autologin, b_login, b_switch); // <-- used to center stuf on screen
-    }
-
-    private void login() {
-        if (tb_name.Text == string.Empty || tb_password.Password == string.Empty) {
-            // error message
-            return;
-        }
-
-        if (Regex.IsMatch(tb_name.Text, @"^[\%\/\\\&\?\,\'\;\:\!\-]+$")){
-            // error message
-            return;
-        }
-
-        if (Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value, OnLogin)) {
-            // error message
-            return;
-        }
-    }
-
-    private void regist() {
-
-        if (tb_reg_name.Text == string.Empty || tb_reg_password.Password == string.Empty) {
-            // error message
-            return;
-        }
-
-        if (Regex.IsMatch("", @"^[\%\/\\\&\?\,\'\;\:\!\-]+$")){
-            // error message
-            return;
-        }
-
-        if (MemoryDatabase.database.CheckTableExistence("users") && !MemoryDatabase.database.TableContainsData("users", "name", "'" + tb_reg_name.Text + "'")) {
-            SortedList<string, string> userData = new SortedList<string, string>();
-            userData.Add("id", "0");
-            userData.Add("name", tb_reg_name.Text);
-            userData.Add("password", tb_reg_password.Password);
-            userData.Add("wins", "0");
-            userData.Add("losses", "0");
-            MemoryDatabase.database.AddDataToTable("users", userData);
-            Account.login(tb_reg_name.Text, tb_reg_password.Password, false, OnLogin);
-        }else {
-            // error message
-            return;
-        }
-    }
-
-
-}
