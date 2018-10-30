@@ -40,7 +40,7 @@ public class Account{
         MemoryDatabase.database.UpdateDataToTableFilter("users", "id = '" + id.ToString() + "'", userData);
     }
 
-    public void updateScore(bool _wongame) {
+    public static void updateScore(bool _wongame) {
         if (_wongame)
             score.Won();
         else

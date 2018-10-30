@@ -31,7 +31,7 @@ namespace NewMemoryGame{
             }
 
             OnGameEnded += (x, y) => {
-                Account.
+                Account.updateScore(x == Account.name); // boi!
             };
         }
 
@@ -80,8 +80,7 @@ namespace NewMemoryGame{
             nxtTrnCmd.send(new string[3] { userID, correct, cardID });
         }
 
-        public List<Player> getPlayers()
-        {
+        public List<Player> getPlayers(){
             return players;
         }
     }
