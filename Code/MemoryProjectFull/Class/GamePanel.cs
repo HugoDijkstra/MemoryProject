@@ -80,6 +80,7 @@ namespace MemoryProjectFull
                 this.Dispatcher.Invoke(() =>
                 {
                     Card.callback = HandleCallback;
+                    childerenCount = 100;
                     Run(x, carSizeX, carSizeY);
                 });
 
@@ -228,6 +229,11 @@ namespace MemoryProjectFull
                             Children.Remove((Border)(cards[x, y].Parent));
                 destroyAfterFlipTimer.Tick -= DestroyTimer_Tick;
             }
+        }
+
+        int childerenCount = 0;
+        public bool IsGridEmpty() {
+            return childerenCount <= 0;
         }
 
         ///TODO documentation

@@ -40,6 +40,15 @@ public class Account{
         MemoryDatabase.database.UpdateDataToTableFilter("users", "id = '" + id.ToString() + "'", userData);
     }
 
+    public static void updateScore(bool _wongame) {
+        if (_wongame)
+            score.Won();
+        else
+            score.Lost();
+
+        save();
+    }
+
     public static bool login(string _name, string _password, bool _autologin, Action _callback) {
         if (MemoryDatabase.database.CheckTableExistence("users")) {
             if (_autologin) {

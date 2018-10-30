@@ -10,6 +10,7 @@ namespace NewMemoryGame
         public int ID;
         public string name;
         public int nextID;
+        public int points;
 
         public Player(string _name, int _ID, int _nextID){
             name = _name;
