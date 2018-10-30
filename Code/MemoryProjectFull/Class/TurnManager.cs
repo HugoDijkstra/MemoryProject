@@ -47,25 +47,42 @@ namespace NewMemoryGame{
         /// <param name="_data">command data</param>
         private void Turn(string[] _data){
 
+            // fix turn indicator
+            int id = int.Parse(_data[0]);
+            for (int i = 0; i < players.Count; i++){
+                if (players[i].ID == id){
+                    playerPanels[i].SetTurn(true);
+                    int old = i - 1 < 0 ? players.Count - 1 : i - 1;
+                    playerPanels[old].SetTurn(false);
+                }
+            }
+
             // on correct card
-            if (_data[1] == "1") {
+            if (_data[1] == "1")
+            {
+                //AudioManager.GetAudio("card_done").Play(false);
                 gamepanel.RemoveCard(int.Parse(_data[2]));
 
-                int id = int.Parse(_data[0]);
-                for (int i = 0; i < players.Count; i++){
-                    if (players[i].ID == id) {
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].ID == id)
+                    {
                         // add points to player
                         players[i].points++;
                         playerPanels[i].SetCards(players[i].points);
-                        
+
                         // on grid empty
-                        if (gamepanel.IsGridEmpty()) {
+                        if (gamepanel.IsGridEmpty())
+                        {
                             OnGameEnded?.Invoke(players[i].name, players[i].points);
                             return;
                         }
                         break;
                     }
                 }
+            }
+            else {
+                //AudioManager.GetAudio("card_fail").Play(false);
             }
 
             Console.WriteLine("NEXT TUNR!!!!");

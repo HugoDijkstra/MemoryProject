@@ -78,8 +78,6 @@ class Menu : PanelBase{
         _notification = new NotificationHandler();
         this.addChild(_notification);
 
-        NotificationManager.OnRequestNotification("gang gang nibbah");
-
         // login pannel
         _loginPanel = new LoginPanel(300, 500);
         _loginPanel.setBackground("assets/images/background_panel.png");
@@ -170,7 +168,6 @@ class Menu : PanelBase{
         });
 
         tb_lobbyplayerdisplay = UIFactory.CreateTextBlock(Account.name + "\n", new Thickness(), new Point(300, 400), 20, TextAlignment.Left);
-        tb_lobbyplayerdisplay.Background = Brushes.Gray;
 
         // loading screen
         tb_loadingmessage = UIFactory.CreateTextBlock("connection to game", new Thickness(), new Point(400, 30), 20);

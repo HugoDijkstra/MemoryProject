@@ -22,6 +22,7 @@ namespace NewMemoryGame{
             name = _name;
             ID = _ID;
             nextID = _nextID;
+            points = 0;
         }
     }
 }

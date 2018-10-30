@@ -71,7 +71,6 @@ public class UIFactory {
         t.Height = _size.Y;
         t.FontSize = _fontSize;
         t.TextAlignment = _alignment;
-        t.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255)); ;
 
         return t;
     }
