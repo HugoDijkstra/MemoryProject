@@ -92,6 +92,7 @@
     <Compile Include="Class\MemoryConfig.cs" />
     <Compile Include="Class\Menu.cs" />
     <Compile Include="Class\NetworkManager.cs" />
+    <Compile Include="Class\Notification.cs" />
     <Compile Include="Class\PanelBase.cs" />
     <Compile Include="Class\Player.cs" />
     <Compile Include="Class\PlayerInfo.cs" />
