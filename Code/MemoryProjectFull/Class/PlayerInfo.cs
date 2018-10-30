@@ -17,6 +17,9 @@ namespace MemoryProjectFull
 
         private TextBlock block;
 
+        ImageBrush inactive;
+        ImageBrush active;
+
         public enum ScreenLocation
         {
             TopRight,
@@ -52,12 +55,13 @@ namespace MemoryProjectFull
 
             block.FontSize = fontSize;
 
-            this.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri("assets/images/background_panel.png", UriKind.RelativeOrAbsolute))) };
-
+            inactive = new ImageBrush() { ImageSource = new BitmapImage((new Uri("assets/images/background_panel.png", UriKind.RelativeOrAbsolute))) };
+            active = new ImageBrush() { ImageSource = new BitmapImage((new Uri("assets/images/background_panel_active.png", UriKind.RelativeOrAbsolute))) };
+            this.Background = inactive;
             UpdateScreenLocation();
         }
 
-        public void setBackground(SolidColorBrush _color)
+        public void setBackgroundColor(SolidColorBrush _color)
         {
             this.Background = _color;
         }
@@ -70,8 +74,18 @@ namespace MemoryProjectFull
 
         public void SetCards(int cardAmount)
         {
-            cards = cardAmount;
-            UpdateBox();
+            this.Dispatcher.Invoke(() => {
+                cards = cardAmount;
+                UpdateBox();
+            });
+        }
+
+        public void SetTurn(bool turn)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Background = turn ? active : inactive;
+            });
         }
 
         private void UpdateBox()
