@@ -59,10 +59,16 @@ namespace MemoryProjectFull
 
             Console.WriteLine(highscores);
             scores = UIFactory.CreateTextBlock(highscores, new System.Windows.Thickness(), new System.Windows.Point(_width, Height), 16, System.Windows.TextAlignment.Center);
+            this.Center(UIPlacerMode.center, 3, scores);
 
             this.addChild(scores);
             this.setBackground(Brushes.LightGray);
 
+        }
+
+        public override void rescale()
+        {
+            this.Center(UIPlacerMode.center, 3, scores);
         }
 
         struct User

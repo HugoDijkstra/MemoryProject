@@ -67,6 +67,16 @@ public class PanelBase : Canvas {
         }
     }
 
+    public void CenterRigth(UIPlacerMode _mode, int _padding, params FrameworkElement[] _elements) {
+        int startHeight = _mode == UIPlacerMode.top ? (int)_elements[0].Height / 2 + _padding : _mode == UIPlacerMode.center ? MainWindow.SCREEN_HEIGHT / 2 - getTotalHeight(_elements, _padding) / 2 : MainWindow.SCREEN_HEIGHT - (int)_elements[0].Height / 2 - _padding;
+        int startWidth = MainWindow.SCREEN_WIDTH;
+        for (int i = 0; i < _elements.Length; i++){
+            Thickness th = new Thickness((startWidth - (_elements[i].Width + _padding)) - this.Margin.Left, startHeight - this.Margin.Top, 0, 0);
+            _elements[i].Margin = th;
+            startHeight = getNextHeight(startHeight, _mode, _elements[i], _padding);
+        }
+    }
+
     // extra scaling fucntions
     private int getNextHeight(int _height, UIPlacerMode _mode, FrameworkElement _element, int _padding = 0) {
         if (_mode == UIPlacerMode.top || _mode == UIPlacerMode.center) {
@@ -87,6 +97,8 @@ public class PanelBase : Canvas {
 }
 
 public class LoginPanel : PanelBase {
+
+    public Action OnLogin;
 
     private bool isSwitched;
 
@@ -160,7 +172,7 @@ public class LoginPanel : PanelBase {
     }
 
     private void login() {
-        Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value);
+        Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value, OnLogin);
     }
 
     private void regist() {

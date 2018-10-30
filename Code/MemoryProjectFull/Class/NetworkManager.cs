@@ -147,6 +147,10 @@ public class NetworkHandler {
         _serverCommands.Add(_serverDisconnect);
     }
 
+    ~NetworkHandler() {
+        this.terminate();
+    }
+
     public void init(int _id) {
         _serverInit.callback?.Invoke(new string[1] { _id.ToString() });
     }
@@ -173,6 +177,11 @@ public class NetworkHandler {
 
     public void requestResync() {
         _serverSyncRequest.send(new string[1] { networkID.ToString() });
+    }
+
+    public void terminate() {
+        _serverCommands.Clear();
+        _cleintCommands.Clear();
     }
 
     public void onRecieveCommand(string _command, string[] _data){
@@ -226,6 +235,10 @@ public class NetworkManager {
         _uniqueID = 0;
     }
 
+    ~NetworkManager() {
+        this.terminate();
+    }
+
     // get instance of network manager
     public static NetworkManager getInstance() {
         if (_instance == null) {
@@ -243,6 +256,7 @@ public class NetworkManager {
 
         OnRecieveCommand += NetworkHandler.getInstance().onRecieveCommand;
         NetworkHandler.getInstance().OnInitialized += _OnInitialized;
+        NetworkHandler.getInstance().OnClientDisconection += OnClientDisconection;
 
         if (_type == NetworkType.None) {
             return;
@@ -341,6 +355,8 @@ public class NetworkManager {
 
     // stop connection with all clients and close thread
     public void terminate() {
+        NetworkHandler.getInstance().OnClientDisconection += OnClientDisconection;
+
         if (_checkConnectionThread != null) {
             _checkConnectionThread.Abort();
             _checkConnectionThread = null;
@@ -395,6 +411,12 @@ public class NetworkManager {
             cConnection.networkID = networkID;
             _clientConnections.Add(cConnection);
         }
+    }
+    
+    private void OnClientDisconection(int _id) {
+        ClientConnection client = _clientConnections.Find(x => _id == x.networkID);
+        if (client != null)
+            terminateClient(client);
     }
 
     // on terminate client

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 public class Account{
@@ -23,7 +24,7 @@ public class Account{
             string name = MainConfig.GetGroup("account").GetEntry("name").GetValue<string>();
             string password = MainConfig.GetGroup("account").GetEntry("password").GetValue<string>();
 
-            login(name, password, true);
+            login(name, password, true, null);
         }
     }
 
@@ -39,7 +40,7 @@ public class Account{
         MemoryDatabase.database.UpdateDataToTableFilter("users", "id = '" + id.ToString() + "'", userData);
     }
 
-    public static void login(string _name, string _password, bool _autologin) {
+    public static void login(string _name, string _password, bool _autologin, Action _callback) {
         if (MemoryDatabase.database.CheckTableExistence("users")) {
             if (_autologin) {
                 MainConfig.GetGroup("account").GetEntry("autologin").SetValue("1");
@@ -52,11 +53,18 @@ public class Account{
             string[] data = compactData.Split(',');
 
             id = int.Parse(data[0]);
-            name = data[1];
+            name = Regex.Replace(data[1], @"\s+", "");
             score = new Score() { wins = int.Parse(data[3]), losses = int.Parse(data[4]) };
 
             isActivate = true;
+            _callback?.Invoke();
         }
+    }
+
+    public static void logout() {
+        MainConfig.GetGroup("account").GetEntry("autologin").SetValue("0");
+        MainConfig.Save();
+        createDummyAccount();
     }
 
     private static void createDummyAccount() {

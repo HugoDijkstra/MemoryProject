@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 class LobbyManager {
 
+    public Action<string> OnPlayerJoin;
     public Action<Player[]> OnStart;
 
-    private List<Client> global;
+    public List<Client> global;
     private Client local;
 
     private NetworkCommand _onResync;
@@ -20,7 +21,9 @@ class LobbyManager {
         
         string name = _clientName;
         local = new Client(name, NetworkHandler.getInstance().networkID);
+    }
 
+    public void init() {
         _onResync = new NetworkCommand("G:RSYNC", (x) => {
 
             if (NetworkHandler.getInstance().isHost()){ // <-- make format function for this or make sending data beter (sending arrays and formating them in Net)
@@ -47,6 +50,7 @@ class LobbyManager {
 
                 for (int i = 2; i < count; i += 2){
                     OnConnect(int.Parse(x[i]), x[i + 1]);
+                    OnPlayerJoin?.Invoke(x[i + 1]);
                 }
 
                 _onConnection.send(new string[2] { local.id.ToString(), local.name });
@@ -64,6 +68,7 @@ class LobbyManager {
             }
 
             OnConnect(id, cName);
+            OnPlayerJoin?.Invoke(cName);
         }, true, true);
 
         _onResync.send(NetworkHandler.getInstance().networkID.ToString());
