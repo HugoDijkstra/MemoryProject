@@ -31,11 +31,15 @@ namespace MemoryProjectFull
 
                     foreach (var group in config.Groups)
                     {
+                        if (group.IsEmpty) continue;
+
                         writer.Write((byte)Token.GROUP_NAME);
                         writer.Write(group.GetName());
 
                         foreach (var entry in group.Entries)
                         {
+                            if (entry.IsEmpty) continue;
+
                             writer.Write((byte)Token.ENTRY_NAME);
                             writer.Write(entry.GetName());
                             writer.Write((byte)Token.ENTRY_VALUE);
@@ -113,7 +117,7 @@ namespace MemoryProjectFull
                                 config.AddGroup(groupName);
                                 currentGroup = config.GetGroup(groupName);
 
-                                expectedTokens = (byte)Token.ENTRY_NAME;
+                                expectedTokens = (byte)Token.ENTRY_NAME | (byte)Token.GROUP_NAME;
                                 break;
                         }
                     }

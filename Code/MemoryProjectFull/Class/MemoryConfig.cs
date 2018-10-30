@@ -130,6 +130,14 @@ namespace MemoryProjectFull
             return entries.Remove(name);
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return (entries.Count == 0);
+            }
+        }
+
         public IEnumerable<DataEntry> Entries
         {
             get
@@ -213,6 +221,14 @@ namespace MemoryProjectFull
         public bool RemoveGroup(string name)
         {
             return groups.Remove(name);
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return (groups.Count == 0);
+            }
         }
 
         public IEnumerable<DataGroup> Groups
