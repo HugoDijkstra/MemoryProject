@@ -40,6 +40,13 @@ public class NetworkCommand{
 
     public bool idCheck;
 
+    /// <summary>
+    /// constructor of NetworkCommand
+    /// </summary>
+    /// <param name="_key">command key</param>
+    /// <param name="_callback">callback of command</param>
+    /// <param name="_idCheck">do id check</param>
+    /// <param name="_autoActiate">auto activate command</param>
     public NetworkCommand(string _key, Action<string[]> _callback, bool _idCheck = false, bool _autoActiate = false){
         key = _key;
         callback += _callback;
@@ -49,23 +56,40 @@ public class NetworkCommand{
             activate();
     }
     
+    /// <summary>
+    /// send a command to all clients
+    /// </summary>
+    /// <param name="_data">data of command</param>
     public void send(string[] _data) {
         NetworkManager.getInstance().send(key, _data);
     }
 
+    /// <summary>
+    /// send a command to all clients
+    /// </summary>
+    /// <param name="_data">data of command</param>
     public void send(string _data) {
         NetworkManager.getInstance().send(key, new string[1] { _data });
     }
 
+    /// <summary>
+    /// activate command
+    /// </summary>
     public void activate() {
         NetworkHandler.getInstance().addCommand(this);
     }
 
+    /// <summary>
+    /// deactivate command
+    /// </summary>
     public void disable() {
         NetworkHandler.getInstance().removeCommmand(this);
     }
 }
 
+/// <summary>
+/// The network handler class
+/// </summary>
 public class NetworkHandler {
     private static NetworkHandler _instance;
 
@@ -93,6 +117,9 @@ public class NetworkHandler {
     NetworkCommand _serverConnect;
     NetworkCommand _serverDisconnect;
 
+    /// <summary>
+    /// constructor of network handler
+    /// </summary>
     public NetworkHandler() {
         _serverCommands = new List<NetworkCommand>();
         _cleintCommands = new List<NetworkCommand>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MemoryProjectFull;
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,9 +8,39 @@ using System.Windows.Threading;
 
 namespace NotificationsWPF
 {
+
+    public class NotificationHandler : Canvas {
+
+        private Notification n;
+
+        public NotificationHandler() {
+            NotificationManager.OnRequestNotification += OnRequestNotification;
+        }
+
+        public void OnRequestNotification(string _message) {
+            if (n != null) {
+                this.Children.Remove(n);
+            }
+
+            n = new Notification(_message);
+            this.Children.Add(n);
+            n.FadeIn();
+        }
+
+    }
+
+    public static class NotificationManager {
+
+        public static Action<string> OnRequestNotification;
+
+        public static void RequestNotification(string _message) {
+            OnRequestNotification?.Invoke(_message);
+        }
+
+    }
+
     public class Notification : Control
     {
-
         private const int OFFSET_FROM_TOP = 32;
 
         private const int CONTENT_X_OFFSET  = 32;
@@ -62,6 +93,9 @@ namespace NotificationsWPF
                         {
                             this.Stop();
                             notification.Opacity = MAX_OPACITY;
+                            
+                            this.fadeType = FadeType.FADE_OUT;
+                            this.timer.Start();
                         }
                         break;
 
@@ -112,7 +146,7 @@ namespace NotificationsWPF
 
 
 
-            this.Margin = new Thickness(0, OFFSET_FROM_TOP, 0, 0);
+            this.Margin = new Thickness(MainWindow.SCREEN_WIDTH/2 - (this.message.Width/2 + CONTENT_X_OFFSET), OFFSET_FROM_TOP, 0, 0);
             this.HorizontalAlignment = HorizontalAlignment.Center;
 
             this.Width  = this.message.Width  + CONTENT_X_OFFSET;

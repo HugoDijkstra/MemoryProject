@@ -1,5 +1,6 @@
 ﻿using MemoryProjectFull;
 using NewMemoryGame;
+using NotificationsWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +51,10 @@ class Menu : PanelBase{
     private HighscorePanel _highscorePanel;
     private PanelBase _backgroundGame;
 
+    private NotificationHandler _notification;
+
     public Menu(int _width, int _height) : base(_width, _height){
-        this.setBackground("assets/images/background_menu.png");
+        this.setBackground("assets/images/background_game.jpg");
 
         _startGameCommand = new NetworkCommand("G:START", (x) => {
             this.Dispatcher.Invoke(() => { initNone(); lobbyManager.startGame(); });
@@ -63,8 +66,14 @@ class Menu : PanelBase{
 
         // game background
         _backgroundGame = new PanelBase(MainWindow.SCREEN_WIDTH, MainWindow.SCREEN_HEIGHT);
-        _backgroundGame.setBackground("assets/images/background_game.jpg");
+        _backgroundGame.setBackground("assets/images/background_menu.png");
         this.Center(UIPlacerMode.center, 0, _backgroundGame);
+
+        // notifications
+        _notification = new NotificationHandler();
+        this.addChild(_notification);
+
+        NotificationManager.OnRequestNotification("gang gang nibbah");
 
         // login pannel
         _loginPanel = new LoginPanel(300, 500);
@@ -214,6 +223,7 @@ class Menu : PanelBase{
     public void initNone() {
         this.Children.Clear();
         this.addChild(_backgroundGame);
+        this.addChild(_notification);
     }
 
     public void startGame(bool _isHost){
