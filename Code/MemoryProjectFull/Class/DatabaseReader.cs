@@ -5,7 +5,9 @@ using MySql.Data.MySqlClient;
 
 namespace MemoryProjectFull
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public static class MemoryDatabase {
         public static DatabaseReader database;
         public static void init() {
@@ -13,6 +15,9 @@ namespace MemoryProjectFull
         }
     }
 
+    /// <summary>
+    /// Reader for databases
+    /// </summary>
     public class DatabaseReader
     {
         /// <summary>
@@ -43,15 +48,11 @@ namespace MemoryProjectFull
         }
 
         /// <summary>
-        /// 
+        /// Get data from the table
         /// </summary>
-        /// <param name="command"></param>
-        public void SendNonReturnCommand(string command)
-        {
-            MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
-            sqlCommand.ExecuteNonQuery();
-        }
-
+        /// <param name="table">table to get from</param>
+        /// <param name="column">column to get from</param>
+        /// <returns></returns>
         public string GetDataFromTable(string table, string column)
         {
             string command = "SELECT * FROM " + table;
@@ -76,7 +77,7 @@ namespace MemoryProjectFull
         /// <param name="column">Get the value from the tabble from column</param>
         /// <param name="Where">The variable you want to check the value for</param>
         /// <param name="WhareIs">the value you want to check against</param>
-        /// <returns></returns>
+        /// <returns>the data from the table</returns>
         public string GetDataFromTableFilter(string table, string column, string Where, string WhereIs)
         {
             string command = "SELECT * FROM " + table + " Where " + Where + " = " + WhereIs;
@@ -94,6 +95,12 @@ namespace MemoryProjectFull
             return returnvalue;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="Where"></param>
+        /// <returns>the data from the table</returns>
         public string GetDataFromTableFilter(string table, string Where)
         {
             string command = "SELECT * FROM " + table + " Where " + Where;
@@ -114,6 +121,12 @@ namespace MemoryProjectFull
             return returnvalue;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="Where"></param>
+        /// <returns></returns>
         public bool TableContainsData(string table, string Where)
         {
             string command = "SELECT * FROM " + table + " Where " + Where;
@@ -125,6 +138,13 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="Where"></param>
+        /// <param name="WhereIs"></param>
+        /// <returns></returns>
         public bool TableContainsData(string table, string Where, string WhereIs)
         {
             string command = "SELECT * FROM " + table + " Where " + Where + "=" + WhereIs;
@@ -196,6 +216,12 @@ namespace MemoryProjectFull
             sqlCommand.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <param name="values"></param>
         public void UpdateDataToTable(string table, string column, SortedList<string, string> values) {
             string command = "UPDATE " + table + " SET ";
 
@@ -210,6 +236,12 @@ namespace MemoryProjectFull
             sqlCommand.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="where"></param>
+        /// <param name="values"></param>
         public void UpdateDataToTableFilter(string table, string where, SortedList<string, string> values) {
             string command = "UPDATE " + table + " SET ";
 
@@ -289,6 +321,9 @@ namespace MemoryProjectFull
             sqlCommand.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// SQL Data type
+        /// </summary>
         public enum MySqlDataType
         {
             Text,
