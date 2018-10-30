@@ -197,6 +197,7 @@ namespace MemoryProjectFull
                     Deactivate();
                     flipTimer.Tick += FlipTimer_Tick;
                 }
+                waitForFlip = currentlyFlippingB;
                 OnClickDone(doneArgs);
                 firstCardClicked = false;
                 doneArgs = new OnClickDoneArgs();
@@ -232,7 +233,8 @@ namespace MemoryProjectFull
         }
 
         int childerenCount = 0;
-        public bool IsGridEmpty() {
+        public bool IsGridEmpty()
+        {
             return childerenCount <= 0;
         }
 
