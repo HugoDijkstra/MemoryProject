@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 class Menu : PanelBase{
 
@@ -39,7 +41,7 @@ class Menu : PanelBase{
 
         // login pannel
         _panel = new LoginPanel(300, 500);
-        _panel.setBackground(Brushes.Gray);
+        _panel.setBackground("assets/images/ui_button.png");
         this.Center(UIPlacerMode.center, 0, _panel);
         _panel.rescale();
 
@@ -49,16 +51,6 @@ class Menu : PanelBase{
         //UIPlacer.Center(UIPlacerMode.center, 0, highscorePanel);
 
         // player displays
-        //PlayerInfo info = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopLeft, 20);
-        //PlayerInfo info1 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.TopRight, 20);
-        //PlayerInfo info2 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomLeft, 20);
-        //PlayerInfo info3 = new PlayerInfo("Helloworld", new Point(300, 70), PlayerInfo.ScreenLocation.BottomRight, 20);
-
-        //this.Children.Add(info);
-        //this.Children.Add(info1);
-        //this.Children.Add(info2);
-        //this.Children.Add(info3);
-
 
         b_login = UIFactory.CreateButton("LOGIN", new Thickness(), new Point(70, 30), (x, y) =>{
 
@@ -151,9 +143,16 @@ class Menu : PanelBase{
             this.removeChild(b_start);
 
             gamepanel = new GamePanel(5, 4, 100, 200, "cats"); // init the game panel
-            this.removeChild(gamepanel);
+            this.addChild(gamepanel);
 
-            turnManager = new TurnManager(x, gamepanel);
+            List<PlayerInfo> playerInfo = new List<PlayerInfo>();
+            for (int i = 0; i < x.Length; i++){
+                PlayerInfo panel = new PlayerInfo(x[i].name, new Point(300, 70), (PlayerInfo.ScreenLocation)i, 20);
+                this.addChild(panel);
+                playerInfo.Add(panel);
+            }
+
+            turnManager = new TurnManager(x, playerInfo, gamepanel);
         };
 
         if (NetworkHandler.getInstance().isHost())

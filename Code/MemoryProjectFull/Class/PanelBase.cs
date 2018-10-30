@@ -1,13 +1,17 @@
 ﻿using MemoryProjectFull;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 public class PanelBase : Canvas {
 
@@ -21,7 +25,7 @@ public class PanelBase : Canvas {
 
     // backgrounds
     public void setBackground(string _path) {
-        this.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri(_path, UriKind.Absolute))) };
+        this.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri(_path, UriKind.RelativeOrAbsolute))) };
     }
     public void setBackground(SolidColorBrush _color) {
         this.Background = _color;
@@ -113,6 +117,10 @@ public class LoginPanel : PanelBase {
         b_login = UIFactory.CreateButton("Login", new Thickness(), new Point(250, 50), (x, y) =>{
             login();
         });
+        ImageBrush i = new ImageBrush(new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), System.AppDomain.CurrentDomain.BaseDirectory + "\\assets\\images\\ui_button.png")));
+        b_login.Background = i;
+        b_login.BorderThickness = new Thickness();
+        
 
         tb_reg_name = UIFactory.CreateTextBox(new Thickness(), new Point(250, 30), 20, TextAlignment.Left); // <-- used to create buttons, textboxs and more ( based of a factory google can tell how it workes [fewwy easy])
         tb_reg_password = UIFactory.CreatePasswordBox(new Thickness(), new Point(250, 30), 20);

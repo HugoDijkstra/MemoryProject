@@ -4,17 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NewMemoryGame{
     class TurnManager{
 
-        NetworkCommand nxtTrnCmd;
+        private NetworkCommand nxtTrnCmd;
         private List<Player> players;
         private GamePanel gamepanel;
 
-        public TurnManager(Player[] _players, GamePanel _gamepanel){
+        private List<PlayerInfo> playerPanels;
+
+        public TurnManager(Player[] _players, List<PlayerInfo> _playerinfo, GamePanel _gamepanel){
             gamepanel = _gamepanel;
             gamepanel.Deactivate();
+
+            playerPanels = _playerinfo;
 
             players = _players.ToList(); // <-- first i do to array and then to list? might need fix?
             nxtTrnCmd = new NetworkCommand("G:NTURN", Turn, false, true);
