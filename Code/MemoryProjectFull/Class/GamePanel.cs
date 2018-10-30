@@ -73,6 +73,7 @@ namespace MemoryProjectFull
                 this.Dispatcher.Invoke(() =>
                 {
                     Card.callback = HandleCallback;
+                    childerenCount = 100;
                     Run(x, carSizeX, carSizeY);
                 });
 
@@ -213,10 +214,15 @@ namespace MemoryProjectFull
                 {
                     if (cards[x, y].ID == id)
                     {
-                        this.Dispatcher.Invoke(() => { Children.Remove((Border)(cards[x, y].Parent)); });
+                        this.Dispatcher.Invoke(() => { Children.Remove((Border)(cards[x, y].Parent)); childerenCount = Children.Count; });
                     }
                 }
             }
+        }
+
+        int childerenCount = 0;
+        public bool IsGridEmpty() {
+            return childerenCount <= 0;
         }
 
         ///TODO documentation

@@ -9,6 +9,8 @@ using System.Windows;
 namespace NewMemoryGame{
     class TurnManager{
 
+        public Action<string, int> OnGameEnded;
+
         private NetworkCommand nxtTrnCmd;
         private List<Player> players;
         private GamePanel gamepanel;
@@ -27,12 +29,33 @@ namespace NewMemoryGame{
             if (NetworkHandler.getInstance().isHost()) { // <-- what if we have dedicated server?
                 nxtTrnCmd.send(new string[3] { _players[0].ID.ToString(), "0", "0"});
             }
+
+            OnGameEnded += (x, y) => {
+                Account.
+            };
         }
 
         private void Turn(string[] _data){
 
+            // on correct card
             if (_data[1] == "1") {
                 gamepanel.RemoveCard(int.Parse(_data[2]));
+
+                int id = int.Parse(_data[0]);
+                for (int i = 0; i < players.Count; i++){
+                    if (players[i].ID == id) {
+                        // add points to player
+                        players[i].points++;
+                        playerPanels[i].SetCards(players[i].points);
+                        
+                        // on grid empty
+                        if (gamepanel.IsGridEmpty()) {
+                            OnGameEnded?.Invoke(players[i].name, players[i].points);
+                            return;
+                        }
+                        break;
+                    }
+                }
             }
 
             Console.WriteLine("NEXT TUNR!!!!");
