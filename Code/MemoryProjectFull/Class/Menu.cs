@@ -53,6 +53,11 @@ class Menu : PanelBase{
 
     private NotificationHandler _notification;
 
+    /// <summary>
+    /// constructor
+    /// </summary>
+    /// <param name="_width">panel width</param>
+    /// <param name="_height">panel height</param>
     public Menu(int _width, int _height) : base(_width, _height){
         this.setBackground("assets/images/background_game.jpg");
 
@@ -72,8 +77,6 @@ class Menu : PanelBase{
         // notifications
         _notification = new NotificationHandler();
         this.addChild(_notification);
-
-        NotificationManager.OnRequestNotification("gang gang nibbah");
 
         // login pannel
         _loginPanel = new LoginPanel(300, 500);
@@ -132,8 +135,9 @@ class Menu : PanelBase{
 
         b_client = UIFactory.CreateButton("Connect To Game", new Thickness(), new Point(200, 50), (x, y) => {
             startGame(false);
+            
         });
-        
+
         b_host = UIFactory.CreateButton("Host Game", new Thickness(), new Point(200, 50), (x, y) => {
             startGame(true);
         });
@@ -164,7 +168,6 @@ class Menu : PanelBase{
         });
 
         tb_lobbyplayerdisplay = UIFactory.CreateTextBlock(Account.name + "\n", new Thickness(), new Point(300, 400), 20, TextAlignment.Left);
-        tb_lobbyplayerdisplay.Background = Brushes.Gray;
 
         // loading screen
         tb_loadingmessage = UIFactory.CreateTextBlock("connection to game", new Thickness(), new Point(400, 30), 20);
@@ -177,6 +180,9 @@ class Menu : PanelBase{
         initMenu();
     }
 
+    /// <summary>
+    /// init menu
+    /// </summary>
     public void initMenu(){
         AudioManager.GetAudio("music_menu").Play(true);
         AudioManager.GetAudio("music_game").Stop();
@@ -189,6 +195,9 @@ class Menu : PanelBase{
         this.Center(UIPlacerMode.center, 3, tb_namemessage, tb_ip, b_client, b_host, b_quit);
     }
 
+    /// <summary>
+    /// init lobby
+    /// </summary>
     public void initLobby(){
         _onGengreChange.activate();
         this.removeChild(tb_loadingmessage, b_loadingback);
@@ -212,6 +221,9 @@ class Menu : PanelBase{
         this.Center(UIPlacerMode.center, 3, tb_lobbyplayerdisplay);
     }
 
+    /// <summary>
+    /// init loading
+    /// </summary>
     public void initLoading(){
         this.removeChild(b_highscore);
         this.removeChild(b_login);
@@ -220,12 +232,21 @@ class Menu : PanelBase{
         this.addChild(tb_loadingmessage, b_loadingback);
     }
 
+    /// <summary>
+    /// init none
+    /// </summary>
     public void initNone() {
+        AudioManager.GetAudio("music_game").Play(true);
+        AudioManager.GetAudio("music_menu").Stop();
         this.Children.Clear();
         this.addChild(_backgroundGame);
         this.addChild(_notification);
     }
-
+    
+    /// <summary>
+    /// start game
+    /// </summary>
+    /// <param name="_isHost">start game as host</param>
     public void startGame(bool _isHost){
         initLoading();
 
@@ -261,7 +282,6 @@ class Menu : PanelBase{
                 // display error message
                 return;
             }
-            
         }
 
         NetworkHandler.getInstance().OnLostConnectionToHost += () => { // on lost connection with host callback
@@ -269,6 +289,9 @@ class Menu : PanelBase{
         };
     }
 
+    /// <summary>
+    /// terminate
+    /// </summary>
     private void terminateLobby() {
         NetworkManager.getInstance().terminate();
         NetworkHandler.getInstance().terminate();
@@ -277,6 +300,9 @@ class Menu : PanelBase{
         _onGengreChange.disable();
     }
 
+    /// <summary>
+    /// generate lobby
+    /// </summary>
     private void createLobby(){
         lobbyManager = new LobbyManager(Account.name);
         tb_lobbyplayerdisplay.Text = Account.name + "\n";

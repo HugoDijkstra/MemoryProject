@@ -10,6 +10,9 @@ using System.Windows.Media.Imaging;
 
 namespace MemoryProjectFull
 {
+    /// <summary>
+    /// Player info panel
+    /// </summary>
     public class PlayerInfo : Canvas
     {
         public string playerName { get; private set; }
@@ -32,6 +35,13 @@ namespace MemoryProjectFull
 
         public Point size;
 
+        /// <summary>
+        /// Set all atributes
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <param name="size"></param>
+        /// <param name="location"></param>
+        /// <param name="fontSize"></param>
         public PlayerInfo(string playerName, Point size, ScreenLocation location, int fontSize)
         {
             this.screenLocation = location;
@@ -61,17 +71,29 @@ namespace MemoryProjectFull
             UpdateScreenLocation();
         }
 
+        /// <summary>
+        /// Set color using a color object
+        /// </summary>
+        /// <param name="_color"></param>
         public void setBackgroundColor(SolidColorBrush _color)
         {
             this.Background = _color;
         }
 
+        /// <summary>
+        /// Set the name of the player represented by this board
+        /// </summary>
+        /// <param name="playerName"></param>
         public void SetName(string playerName)
         {
             this.playerName = playerName;
             UpdateBox();
         }
 
+        /// <summary>
+        /// Set points in cards collected
+        /// </summary>
+        /// <param name="cardAmount"></param>
         public void SetCards(int cardAmount)
         {
             this.Dispatcher.Invoke(() => {
@@ -80,6 +102,10 @@ namespace MemoryProjectFull
             });
         }
 
+        /// <summary>
+        /// Tell the board if its the active players turn
+        /// </summary>
+        /// <param name="turn"></param>
         public void SetTurn(bool turn)
         {
             this.Dispatcher.Invoke(() =>
@@ -88,11 +114,17 @@ namespace MemoryProjectFull
             });
         }
 
+        /// <summary>
+        /// Update the box content
+        /// </summary>
         private void UpdateBox()
         {
             block.Text = "Name: " + playerName + "\nCards: " + cards;
         }
 
+        /// <summary>
+        /// update the location on the screen
+        /// </summary>
         private void UpdateScreenLocation()
         {
             Thickness location = new Thickness();

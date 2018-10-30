@@ -13,6 +13,10 @@ namespace MemoryProjectFull
 
         TextBlock scores;
         Button backButton;
+
+        /// <summary>
+        /// Constructor for the highscore panel
+        /// </summary>
         public HighscorePanel(int _width, int _height) : base(_width, _height)
         {
             string usersString = MemoryDatabase.database.GetDataFromTable("users", "name");
@@ -67,6 +71,9 @@ namespace MemoryProjectFull
             this.Center(UIPlacerMode.center, 3, scores);
         }
 
+        /// <summary>
+        /// User info for highscores
+        /// </summary>
         struct User
         {
             public string name;

@@ -33,7 +33,7 @@ namespace MemoryProjectFull
 
             // add autio
             AudioManager.RegisterAudio("music_menu", "assets/audio/button_click.mp3");
-            AudioManager.RegisterAudio("music_game", "assets/audio/button_click.mp3");
+            AudioManager.RegisterAudio("music_game", "assets/audio/game_music.mp3");
 
             AudioManager.RegisterAudio("button_click", "assets/audio/button_click.mp3");
             AudioManager.RegisterAudio("whoosh_1", "assets/audio/whoosh_1.mp3");

@@ -17,6 +17,12 @@ namespace NewMemoryGame{
 
         private List<PlayerInfo> playerPanels;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="_players">players list</param>
+        /// <param name="_playerinfo">player info list</param>
+        /// <param name="_gamepanel">game panel</param>
         public TurnManager(Player[] _players, List<PlayerInfo> _playerinfo, GamePanel _gamepanel){
             gamepanel = _gamepanel;
             gamepanel.Deactivate();
@@ -35,27 +41,48 @@ namespace NewMemoryGame{
             };
         }
 
+        /// <summary>
+        /// on next turn network callback
+        /// </summary>
+        /// <param name="_data">command data</param>
         private void Turn(string[] _data){
 
+            // fix turn indicator
+            int id = int.Parse(_data[0]);
+            for (int i = 0; i < players.Count; i++){
+                if (players[i].ID == id){
+                    playerPanels[i].SetTurn(true);
+                    int old = i - 1 < 0 ? players.Count - 1 : i - 1;
+                    playerPanels[old].SetTurn(false);
+                }
+            }
+
             // on correct card
-            if (_data[1] == "1") {
+            if (_data[1] == "1")
+            {
+                //AudioManager.GetAudio("card_done").Play(false);
                 gamepanel.RemoveCard(int.Parse(_data[2]));
 
-                int id = int.Parse(_data[0]);
-                for (int i = 0; i < players.Count; i++){
-                    if (players[i].ID == id) {
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].ID == id)
+                    {
                         // add points to player
                         players[i].points++;
                         playerPanels[i].SetCards(players[i].points);
-                        
+
                         // on grid empty
-                        if (gamepanel.IsGridEmpty()) {
+                        if (gamepanel.IsGridEmpty())
+                        {
                             OnGameEnded?.Invoke(players[i].name, players[i].points);
                             return;
                         }
                         break;
                     }
                 }
+            }
+            else {
+                //AudioManager.GetAudio("card_fail").Play(false);
             }
 
             Console.WriteLine("NEXT TUNR!!!!");
@@ -70,6 +97,11 @@ namespace NewMemoryGame{
             } 
         }
 
+        /// <summary>
+        /// on end turn callback
+        /// </summary>
+        /// <param name="_sender"></param>
+        /// <param name="_onClickDoneArgs"></param>
         private void EndTurn(Object _sender, GamePanel.OnClickDoneArgs _onClickDoneArgs){
             Console.WriteLine("END TUNR!!!!");
 
@@ -80,6 +112,10 @@ namespace NewMemoryGame{
             nxtTrnCmd.send(new string[3] { userID, correct, cardID });
         }
 
+        /// <summary>
+        /// get list of players
+        /// </summary>
+        /// <returns>players list</returns>
         public List<Player> getPlayers(){
             return players;
         }
