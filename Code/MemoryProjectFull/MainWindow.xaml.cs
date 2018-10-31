@@ -32,7 +32,7 @@ namespace MemoryProjectFull
             //this.FontFamily = new FontFamily(new Uri("assets/fonts/font.ttf", UriKind.RelativeOrAbsolute), "game_font");
 
             // add autio
-            AudioManager.RegisterAudio("music_menu", "assets/audio/button_click.mp3");
+            AudioManager.RegisterAudio("music_menu", "assets/audio/backgroundsong_menu.mp3");
             AudioManager.RegisterAudio("music_game", "assets/audio/game_music.mp3");
 
             AudioManager.RegisterAudio("button_click", "assets/audio/button_click.mp3");

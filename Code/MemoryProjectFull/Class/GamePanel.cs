@@ -52,6 +52,8 @@ namespace MemoryProjectFull
         /// <param name="carSizeY">Size of the cards in the y axis</param>
         public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
+
+            AudioManager.GetAudio("music_game").Play(true);
             flipTimer = new DispatcherTimer();
             destroyAfterFlipTimer = new DispatcherTimer();
             flipTimer.Start();
