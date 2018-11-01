@@ -212,6 +212,8 @@ namespace MemoryProjectFull
             }
             else
             {
+                if (doneArgs.firstCard == c)
+                    return;
                 doneArgs.secondCard = c;
                 c.Flip();
                 doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
