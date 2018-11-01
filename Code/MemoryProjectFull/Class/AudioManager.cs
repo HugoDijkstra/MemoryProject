@@ -21,6 +21,8 @@ namespace MemoryProjectFull
             audio_internal = new MediaPlayer();
 
             audio_internal.Open(source);
+            if (audio_internal.HasVideo) throw new ArgumentException("'" + source.OriginalString + "' is not an audio file.");
+
             audio_internal.MediaEnded += MediaEndedCallback;
 
             IsLooping = false;
