@@ -69,7 +69,25 @@ namespace MemoryProjectFull
         }
 
         /// <summary>
-        /// Gets or sets if the audio is looping.
+        /// Gets or sets the Audio's volume.
+        /// </summary>
+        public double Volume
+        {
+            get { return audio_internal.Volume; }
+            set { audio_internal.Volume = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the Audio is muted.
+        /// </summary>
+        public bool IsMuted
+        {
+            get { return audio_internal.IsMuted; }
+            set { audio_internal.IsMuted = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the audio is looping.
         /// </summary>
         private bool IsLooping
         {
