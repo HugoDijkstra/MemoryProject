@@ -56,6 +56,7 @@ namespace MemoryProjectFull
             AudioManager.GetAudio("music_game").Play(true);
             flipTimer = new DispatcherTimer();
             destroyAfterFlipTimer = new DispatcherTimer();
+            destroyAfterFlipTimer.Interval = TimeSpan.FromSeconds(1);
             flipTimer.Start();
             destroyAfterFlipTimer.Start();
 
@@ -264,7 +265,7 @@ namespace MemoryProjectFull
                 return;
             }
 
-            if (!waitForFlip.IsFlipping())
+            if (!waitForFlip.IsFlipping() && !currentlyFlippingA.IsFlipping())
             {
                 for (int x = 0; x < gridSizeX; x++)
                     for (int y = 0; y < gridSizeY; y++)
