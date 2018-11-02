@@ -8,12 +8,18 @@ using System.Windows.Threading;
 
 namespace MemoryProjectFull
 {
-    [Serializable]
+    
+    /// <summary>
+    /// Card Control Class.
+    /// </summary>
     public sealed class Card : Control
     {
 
         public delegate void OnClickCallback(Card card);
 
+        /// <summary>
+        /// Animator Class which handles the animation of the Card Control.
+        /// </summary>
         private class Animator
         {
 
@@ -152,6 +158,13 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the Card class.
+        /// </summary>
+        /// <param name="id">The user assigned identifier of the Card.</param>
+        /// <param name="size">The rendering size of the Card.</param>
+        /// <param name="position">The position of the Card.</param>
+        /// <param name="frontImage">The Front Image of the Card.</param>
         public Card(long id, Size size, Point position, ImageSource frontImage)
         {
             if (back == null) throw new InvalidOperationException("BackImage not initialized. The BackImage must be initialized BEFORE creating any Card");
@@ -169,6 +182,9 @@ namespace MemoryProjectFull
             this.animator = new Animator(this);
         }
 
+        /// <summary>
+        /// Causes the Card to flip sides or reverses the flipping motion if the card was already flipping.
+        /// </summary>
         public void Flip()
         {
             if (!IsFlipping())
@@ -181,36 +197,61 @@ namespace MemoryProjectFull
             }
         }
 
+        /// <summary>
+        /// Determines whether the Card is currently Flipping.
+        /// </summary>
+        /// <returns>True if the Card is flipping, false otherwise.</returns>
         public bool IsFlipping()
         {
             return animator.IsAnimating();
         }
 
+        /// <summary>
+        /// Determines whether the Card is currently revealed.
+        /// </summary>
+        /// <returns>True if the Card is revealed, false otherwise.</returns>
         public bool IsRevealed()
         {
             return revealed;
         }
 
+        /// <summary>
+        /// Determines whether the Card is currently concealed.
+        /// </summary>
+        /// <returns>True if the Card is concealed, false otherwise.</returns>
         public bool IsConcealed()
         {
             return !revealed;
         }
 
+        /// <summary>
+        /// Reveals the Card, causing it to show the front image.
+        /// </summary>
         private void Reveal()
         {
             revealed = true;
         }
 
+        /// <summary>
+        /// Conceals the Card, causing it to show the back image.
+        /// </summary>
         private void Conceal()
         {
             revealed = false;
         }
 
+        /// <summary>
+        /// Reveals the Card if it was concealed, conceals it otherwise.
+        /// </summary>
         private void SwapFace()
         {
             revealed = !revealed;
         }
 
+        /// <summary>
+        /// The Default Callback when the Card is clicked.
+        /// </summary>
+        /// <param name="card">The Card that was clicked.</param>
         private static void DefaultCallback(Card card)
         {
             card.Flip();
@@ -230,28 +271,43 @@ namespace MemoryProjectFull
             animator.DrawNextFrame(drawingContext);
         }
 
+        /// <summary>
+        /// Gets the user assigned identifier.
+        /// </summary>
         public long ID
         {
             get { return cid; }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the Card.
+        /// </summary>
         public Size Size
         {
             get { return new Size(this.Width, this.Height); }
             set { this.Width = value.Width; this.Height = value.Height; }
         }
 
+        /// <summary>
+        /// Gets or sets the position of the Card.
+        /// </summary>
         public Point Position
         {
             get { return new Point(this.Margin.Left, this.Margin.Top); }
             set { this.Margin = new Thickness(value.X, value.Y, 0, 0); }
         }
 
+        /// <summary>
+        /// Sets the Callback to be used when the Card is clicked.
+        /// </summary>
         public static OnClickCallback Callback
         {
             set { callback = value; }
         }
 
+        /// <summary>
+        /// Sets the Back Image for all Cards.
+        /// </summary>
         public static BitmapImage BackImage
         {
             set { back = value.Clone(); }

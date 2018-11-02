@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:MemoryProjectFull"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <Style x:Key="GlobalStyle" TargetType="{x:Type Control}">
+            <Setter Property="FontFamily" Value="pack://application:,,,/assets/fonts/font.ttf#MedievalSharp"/>
+        </Style>
+
     </Application.Resources>
 </Application>

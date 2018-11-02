@@ -52,8 +52,11 @@ namespace MemoryProjectFull
         /// <param name="carSizeY">Size of the cards in the y axis</param>
         public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
         {
+
+            AudioManager.GetAudio("music_game").Play(true);
             flipTimer = new DispatcherTimer();
             destroyAfterFlipTimer = new DispatcherTimer();
+            destroyAfterFlipTimer.Interval = TimeSpan.FromSeconds(1);
             flipTimer.Start();
             destroyAfterFlipTimer.Start();
 
@@ -209,6 +212,8 @@ namespace MemoryProjectFull
             }
             else
             {
+                if (doneArgs.firstCard == c)
+                    return;
                 doneArgs.secondCard = c;
                 c.Flip();
                 doneArgs.Correct = (doneArgs.firstCard.ID == c.ID);
@@ -262,7 +267,7 @@ namespace MemoryProjectFull
                 return;
             }
 
-            if (!waitForFlip.IsFlipping())
+            if (!waitForFlip.IsFlipping() && !currentlyFlippingA.IsFlipping())
             {
                 for (int x = 0; x < gridSizeX; x++)
                     for (int y = 0; y < gridSizeY; y++)
