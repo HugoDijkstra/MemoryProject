@@ -148,10 +148,8 @@ namespace MemoryProjectFull
                     cosines[angle] = Math.Cos(angle * (Math.PI / 180));
                     cosines[MAX_ROTATION - angle] = cosines[angle]; //Mirror angle
                 }
-
                 return cosines;
             }
-
         }
 
         public Card(long id, Size size, Point position, ImageSource frontImage)
