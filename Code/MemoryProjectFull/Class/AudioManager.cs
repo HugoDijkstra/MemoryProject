@@ -25,6 +25,7 @@ namespace MemoryProjectFull
 
             audio_internal.MediaEnded += MediaEndedCallback;
 
+            IsPaused = false;
             IsLooping = false;
         }
 
@@ -34,7 +35,9 @@ namespace MemoryProjectFull
         /// <param name="shouldLoop">Specifies whether the Audio should loop.</param>
         public void Play(bool shouldLoop)
         {
-            audio_internal.Stop();
+            if (!IsPaused) this.Stop();
+
+            IsPaused = false;
             IsLooping = shouldLoop;
             audio_internal.Play();
         }
@@ -45,6 +48,7 @@ namespace MemoryProjectFull
         public void Pause()
         {
             audio_internal.Pause();
+            IsPaused = true;
         }
 
         /// <summary>
@@ -52,6 +56,7 @@ namespace MemoryProjectFull
         /// </summary>
         public void Stop()
         {
+            IsPaused = false;
             IsLooping = false;
             audio_internal.Stop();
         }
@@ -67,6 +72,10 @@ namespace MemoryProjectFull
             {
                 audio_internal.Position = TimeSpan.Zero;
                 audio_internal.Play();
+            }
+            else
+            {
+                IsPaused = false;
             }
         }
 
@@ -89,12 +98,21 @@ namespace MemoryProjectFull
         }
 
         /// <summary>
-        /// Gets or sets whether the audio is looping.
+        /// Gets whether the Audio is paused.
         /// </summary>
-        private bool IsLooping
+        public bool IsPaused
         {
             get;
-            set;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets whether the Audio is looping.
+        /// </summary>
+        public bool IsLooping
+        {
+            get;
+            private set;
         }
 
         private MediaPlayer audio_internal;
