@@ -92,7 +92,7 @@ namespace MemoryProjectFull
 
 
                     // add esc menu
-                    EscapeMenu escMenu = new EscapeMenu(false);
+                    EscapeMenu escMenu = new EscapeMenu(true);
                     this.Children.Add(escMenu);
                     
                     MainWindow.WINDOW.KeyDown += new KeyEventHandler((z, e) => {
