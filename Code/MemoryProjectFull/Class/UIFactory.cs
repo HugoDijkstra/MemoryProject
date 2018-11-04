@@ -29,8 +29,7 @@ public class UIFactory {
         b.Background = new SolidColorBrush(Color.FromArgb(125, 0, 0, 0));
         b.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
         b.BorderThickness = new Thickness();
-
-
+        
         return b;
     }
 
@@ -89,7 +88,6 @@ public class UIFactory {
         t.Height = _size.Y;
         t.FontSize = _fontSize;
         t.PasswordChar = '\u25CF';
-        t.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255)); ;
 
         return t;
     }

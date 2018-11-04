@@ -58,7 +58,8 @@ public class PanelBase : Canvas {
     /// <param name="_elements">children to add</param>
     public void addChild(params FrameworkElement[] _elements) {
         for (int i = 0; i < _elements.Length; i++){
-            this.Children.Add(_elements[i]);
+            if(!this.Children.Contains(_elements[i]))
+                this.Children.Add(_elements[i]);
         }
     }
     /// <summary>

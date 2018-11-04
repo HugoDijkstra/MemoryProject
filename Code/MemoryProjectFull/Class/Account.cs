@@ -1,4 +1,5 @@
 ﻿using MemoryProjectFull;
+using NotificationsWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,15 @@ public class Account{
 
         if (autologin == null || autologin == "0"){
             createDummyAccount();
+            NotificationManager.RequestNotification("You are loged to a dummy account named " + name);
         }
         else{
             string name = MainConfig.GetGroup("account").GetEntry("name").GetValue<string>();
             string password = MainConfig.GetGroup("account").GetEntry("password").GetValue<string>();
 
-            login(name, password, true, null);
+            if(login(name, password, true, null)){
+                NotificationManager.RequestNotification("You are loged in as " + name);
+            }
         }
     }
 

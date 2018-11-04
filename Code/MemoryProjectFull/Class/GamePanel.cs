@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace MemoryProjectFull
 {
@@ -18,6 +19,9 @@ namespace MemoryProjectFull
         // for networking (create a network commmand)
         private NetworkCommand _OnFlip;
         private NetworkCommand _OnGridInit;
+
+        // esc menu
+        private EscapeMenu escMenu;
 
         // i need grid size x and y for this (other way to know wat card is wat, now i do it with x,y pos in array)
         private int gridSizeX;
@@ -50,9 +54,7 @@ namespace MemoryProjectFull
         /// <param name="height">Amount of cards in the y axis</param>
         /// <param name="carSizeX">Size of the cards in the x axis</param>
         /// <param name="carSizeY">Size of the cards in the y axis</param>
-        public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme)
-        {
-
+        public GamePanel(int widht, int height, int carSizeX, int carSizeY, string theme){
             AudioManager.GetAudio("music_game").Play(true);
             flipTimer = new DispatcherTimer();
             destroyAfterFlipTimer = new DispatcherTimer();
@@ -82,14 +84,26 @@ namespace MemoryProjectFull
             false, // <-- only accept command with divrent ID then this client (true/false)
             true); // <-- auto activate command (add command to command listener list)
 
-            _OnGridInit = new NetworkCommand("G:CGRID", (x) =>
-            {
-
-                this.Dispatcher.Invoke(() =>
-                {
+            _OnGridInit = new NetworkCommand("G:CGRID", (x) => {
+                this.Dispatcher.Invoke(() => {
                     Card.callback = HandleCallback;
                     childerenCount = 100;
                     Run(x, carSizeX, carSizeY);
+
+
+                    // add esc menu
+                    EscapeMenu escMenu = new EscapeMenu(false);
+                    this.Children.Add(escMenu);
+                    
+                    MainWindow.WINDOW.KeyDown += new KeyEventHandler((z, e) => {
+                        if (e.Key == Key.Escape)
+                        {
+                            if (escMenu.IsShown)
+                                escMenu.Hide();
+                            else
+                                escMenu.Show();
+                        }
+                    });
                 });
 
             },
@@ -99,9 +113,17 @@ namespace MemoryProjectFull
             initRun(widht, height, carSizeX, carSizeY, theme);
         }
 
-        ~GamePanel()
-        {
+        ~GamePanel(){
             Card.callback = null;
+            this.Children.Remove(escMenu);
+            MainWindow.WINDOW.KeyDown -= new KeyEventHandler((z, e) => {
+                if (e.Key == Key.Escape){
+                    if (escMenu.IsShown)
+                        escMenu.Hide();
+                    else
+                        escMenu.Show();
+                }
+            });
         }
 
         /// <summary>

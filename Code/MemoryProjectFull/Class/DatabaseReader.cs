@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using NotificationsWPF;
 
 namespace MemoryProjectFull
 {
@@ -11,7 +12,34 @@ namespace MemoryProjectFull
     public static class MemoryDatabase {
         public static DatabaseReader database;
         public static void init() {
-            database = new DatabaseReader("185.216.163.49", "8000", "database", "root", "root");
+            reload();
+        }
+
+        public static void reload() {
+            try
+            {
+                database = new DatabaseReader("185.216.163.49", "8000", "database", "root", "root");
+
+                if (isConnected() && !MemoryDatabase.database.CheckTableExistence("users"))
+                {
+                    SortedList<string, DatabaseReader.MySqlDataType> paramList = new SortedList<string, DatabaseReader.MySqlDataType>();
+                    paramList.Add("id", DatabaseReader.MySqlDataType.Float);
+                    paramList.Add("name", DatabaseReader.MySqlDataType.Text);
+                    paramList.Add("password", DatabaseReader.MySqlDataType.Text);
+                    paramList.Add("wins", DatabaseReader.MySqlDataType.Float);
+                    paramList.Add("loses", DatabaseReader.MySqlDataType.Float);
+                    MemoryDatabase.database.CreateTable("users", paramList);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+        }
+
+        public static bool isConnected() {
+            return database._connected;
         }
     }
 
@@ -24,6 +52,7 @@ namespace MemoryProjectFull
         /// The active connection
         /// </summary>
         private MySqlConnection _Connection;
+        public bool _connected;
 
         /// <summary>
         /// The constructor for the database reader object
@@ -43,7 +72,17 @@ namespace MemoryProjectFull
                 "connection timeout=5"
                 );
             Console.WriteLine("Starting connection");
-            _Connection.Open();
+
+            try{
+                _Connection.Open();
+                _connected = true;
+            }
+            catch (Exception){
+                NotificationManager.RequestNotification("Could not connect to game servers, please try againor contact out support!");
+                _connected = false;
+                throw;
+            }
+
             Console.WriteLine("connection made");
         }
 
@@ -55,6 +94,9 @@ namespace MemoryProjectFull
         /// <returns></returns>
         public string GetDataFromTable(string table, string column)
         {
+            if (!_connected)
+                return "";
+
             string command = "SELECT * FROM " + table;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -80,6 +122,9 @@ namespace MemoryProjectFull
         /// <returns>the data from the table</returns>
         public string GetDataFromTableFilter(string table, string column, string Where, string WhereIs)
         {
+            if (!_connected)
+                return "";
+
             string command = "SELECT * FROM " + table + " Where " + Where + " = " + WhereIs;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -103,6 +148,9 @@ namespace MemoryProjectFull
         /// <returns>the data from the table</returns>
         public string GetDataFromTableFilter(string table, string Where)
         {
+            if (!_connected)
+                return "";
+
             string command = "SELECT * FROM " + table + " Where " + Where;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -129,6 +177,9 @@ namespace MemoryProjectFull
         /// <returns></returns>
         public bool TableContainsData(string table, string Where)
         {
+            if (!_connected)
+                return false;
+
             string command = "SELECT * FROM " + table + " Where " + Where;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -147,6 +198,9 @@ namespace MemoryProjectFull
         /// <returns></returns>
         public bool TableContainsData(string table, string Where, string WhereIs)
         {
+            if (!_connected)
+                return false;
+
             string command = "SELECT * FROM " + table + " Where " + Where + "=" + WhereIs;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -164,6 +218,9 @@ namespace MemoryProjectFull
         /// <returns></returns>
         public string GetDataFromTable(string table)
         {
+            if (!_connected)
+                return "";
+
             string command = "SELECT * FROM " + table;
             MySqlCommand sqlCommand = new MySqlCommand(command, _Connection);
 
@@ -194,6 +251,9 @@ namespace MemoryProjectFull
         ///</example>
         public void AddDataToTable(string table, SortedList<string, string> values)
         {
+            if (!_connected)
+                return;
+
             string command = "INSERT INTO `" + table + "` (";
 
             for (int i = 0; i < values.Count; i++)
@@ -222,7 +282,11 @@ namespace MemoryProjectFull
         /// <param name="table"></param>
         /// <param name="column"></param>
         /// <param name="values"></param>
-        public void UpdateDataToTable(string table, string column, SortedList<string, string> values) {
+        public void UpdateDataToTable(string table, string column, SortedList<string, string> values)
+        {
+            if (!_connected)
+                return;
+
             string command = "UPDATE " + table + " SET ";
 
             for (int i = 0; i < values.Count; i++)
@@ -242,7 +306,11 @@ namespace MemoryProjectFull
         /// <param name="table"></param>
         /// <param name="where"></param>
         /// <param name="values"></param>
-        public void UpdateDataToTableFilter(string table, string where, SortedList<string, string> values) {
+        public void UpdateDataToTableFilter(string table, string where, SortedList<string, string> values)
+        {
+            if (!_connected)
+                return;
+
             string command = "UPDATE " + table + " SET ";
 
             for (int i = 0; i < values.Count; i++)
@@ -265,6 +333,9 @@ namespace MemoryProjectFull
         /// <returns> if table exists</returns>
         public bool CheckTableExistence(string tableName)
         {
+            if (!_connected)
+                return false;
+
             MySqlCommand command = new MySqlCommand("SHOW TABLES LIKE '" + tableName + "';", _Connection);
             try
             {
@@ -292,6 +363,9 @@ namespace MemoryProjectFull
         /// reader.CreateTable("goodboys", columnNames);
         public void CreateTable(string tableName, SortedList<string, MySqlDataType> NamesAndTypes)
         {
+            if (!_connected)
+                return;
+
             string command = "CREATE TABLE `" + tableName + "` (";
             for (int i = 0; i < NamesAndTypes.Count; i++)
             {

@@ -22,14 +22,20 @@ namespace MemoryProjectFull
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Window WINDOW;
         public static int SCREEN_WIDTH = 1300;
         public static int SCREEN_HEIGHT = 900;
 
         public MainWindow()
         {
             InitializeComponent();
+            WINDOW = this;
 
             //this.FontFamily = new FontFamily(new Uri("assets/fonts/font.ttf", UriKind.RelativeOrAbsolute), "game_font");
+
+            this.Closed += new EventHandler((x, y) => {
+                NetworkManager.getInstance().terminate();
+            });
 
             // add autio
             AudioManager.RegisterAudio("music_menu", "assets/audio/backgroundsong_menu.mp3");
@@ -57,20 +63,6 @@ namespace MemoryProjectFull
 
             Width = SCREEN_WIDTH + 2 * verticalBorderWidth;
             Height = SCREEN_HEIGHT + captionHeight + 2 * horizontalBorderHeight;
-
-            MemoryDatabase.init();
-
-            Account.Load();
-
-            if (!MemoryDatabase.database.CheckTableExistence("users")) { 
-                SortedList<string, DatabaseReader.MySqlDataType> paramList = new SortedList<string, DatabaseReader.MySqlDataType>();
-                paramList.Add("id", DatabaseReader.MySqlDataType.Float);
-                paramList.Add("name", DatabaseReader.MySqlDataType.Text);
-                paramList.Add("password", DatabaseReader.MySqlDataType.Text);
-                paramList.Add("wins", DatabaseReader.MySqlDataType.Float);
-                paramList.Add("loses", DatabaseReader.MySqlDataType.Float);
-                MemoryDatabase.database.CreateTable("users", paramList);
-            }
 
             //SortedList<string, string> tableData = new SortedList<string, string>();
             //tableData.Add("id", "0");

@@ -28,7 +28,7 @@ namespace MemoryProjectFull
 
         private void SetupHeaderText()
         {
-            headerText = UIFactory.CreateTextBlock("", new Thickness(16, 16, 16, 8), new Size(double.NaN, double.NaN), 16); //TODO: ADD TEXT.
+            headerText = UIFactory.CreateTextBlock("Game Menu", new Thickness(16, 16, 16, 8), new Size(double.NaN, double.NaN), 16); //TODO: ADD TEXT.
 
             headerText.HorizontalAlignment = HorizontalAlignment.Center;
             headerText.VerticalAlignment   = VerticalAlignment.Center;

@@ -1,4 +1,5 @@
 ﻿using MemoryProjectFull;
+using NotificationsWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,17 +93,17 @@ public class LoginPanel : PanelBase {
     /// </summary>
     private void login() {
         if (tb_name.Text == string.Empty || tb_password.Password == string.Empty) {
-            // error message
+            NotificationManager.RequestNotification("You entered no name or password, please try again!");
             return;
         }
 
         if (Regex.IsMatch(tb_name.Text, @"^[\%\/\\\&\?\,\'\;\:\!\-]+$")){
-            // error message
+            NotificationManager.RequestNotification("Name cant contain any special chars, please try again!");
             return;
         }
 
         if (Account.login(tb_name.Text, tb_password.Password, cb_autologin.IsChecked.Value, OnLogin)) {
-            // error message
+            NotificationManager.RequestNotification("You are loged in as " + Account.name);
             return;
         }
     }

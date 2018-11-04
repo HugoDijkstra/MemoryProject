@@ -466,10 +466,19 @@ public class NetworkManager {
     /// </summary>
     public void terminate() {
         NetworkHandler.getInstance().OnClientDisconection += OnClientDisconection;
+        
+        if (_host != null) {
+            _host.Stop();
+        }
 
         if (_checkConnectionThread != null) {
             _checkConnectionThread.Abort();
             _checkConnectionThread = null;
+        }
+        
+        if (_createConnectionThread != null){
+            _createConnectionThread.Abort();
+            _createConnectionThread = null;
         }
 
         for (int i = 0; i < _clientConnections.Count; i++){
@@ -619,7 +628,8 @@ public class ClientConnection{
     /// stop the connection and abort the thread
     /// </summary>
     public void terminate() {
-        if (_clientListener.ThreadState == ThreadState.Running){
+        if (_clientListener != null){
+            _clientListener.Abort();
             _clientListener = null;
         }
 

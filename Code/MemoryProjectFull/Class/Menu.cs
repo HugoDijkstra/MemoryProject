@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -88,12 +89,6 @@ class Menu : PanelBase
         this.Center(UIPlacerMode.center, 0, _loginPanel);
         _loginPanel.rescale();
 
-        // highscore panel
-        _highscorePanel = new HighscorePanel(300, 300);
-        _highscorePanel.setBackground("assets/images/background_panel.png");
-        this.Center(UIPlacerMode.center, 0, _highscorePanel);
-        _highscorePanel.rescale();
-
         _loginPanel.OnLogin += () =>
         {
             b_login.Content = "Logout";
@@ -104,6 +99,11 @@ class Menu : PanelBase
         string title = Account.isActivateAccount() ? "Logout" : "login";
         b_login = UIFactory.CreateButton(title, new Thickness(), new Point(100, 30), (x, y) =>
         {
+
+            if (!MemoryDatabase.isConnected()) {
+                MemoryDatabase.reload();
+                return;
+            }
 
             if (Account.isActivateAccount())
             {
@@ -187,6 +187,8 @@ class Menu : PanelBase
 
         tb_lobbyplayerdisplay = UIFactory.CreateTextBlock(Account.name + "\n", new Thickness(), new Point(300, 400), 20, TextAlignment.Left);
 
+        tb_lobbyplayerdisplay.Background = new ImageBrush() { ImageSource = new BitmapImage((new Uri("assets/images/background_panel.png", UriKind.RelativeOrAbsolute))) };
+
         // loading screen
         tb_loadingmessage = UIFactory.CreateTextBlock("connection to game", new Thickness(), new Point(400, 30), 20);
 
@@ -197,6 +199,17 @@ class Menu : PanelBase
         this.Center(UIPlacerMode.center, 3, tb_loadingmessage, b_loadingback);
 
         initMenu();
+        
+        MemoryDatabase.init();
+        Account.Load();
+        
+        // highscore panel
+        _highscorePanel = new HighscorePanel(300, 300);
+        _highscorePanel.setBackground("assets/images/background_panel.png");
+        this.Center(UIPlacerMode.center, 0, _highscorePanel);
+        _highscorePanel.rescale();
+
+        tb_namemessage.Text = "You are loged in as " + Account.name;
     }
 
     /// <summary>
@@ -290,6 +303,7 @@ class Menu : PanelBase
             catch (Exception)
             {
                 terminateLobby();
+                NotificationManager.RequestNotification("Could not host lobby, try again!");
                 return;
             }
 
@@ -300,22 +314,21 @@ class Menu : PanelBase
             if (!IPAddress.TryParse(tb_ip.Text, out ip))
             {
                 initMenu();
-                // display error message (code from sander)
+                NotificationManager.RequestNotification("Ip entered is not working, try again!");
                 return;
             }
 
             tb_loadingmessage.Text = "Trying to connect to lobby at " + tb_ip.Text;
             try
             {
-                NetworkManager.getInstance().create(NetworkType.Client, tb_ip.Text, 8001, (x) =>
-                { // start client
+                NetworkManager.getInstance().create(NetworkType.Client, tb_ip.Text, 8001, (x) => { // start client
                     this.Dispatcher.Invoke(() => { createLobby(); initLobby(); });
                 });
             }
             catch (Exception)
             {
                 terminateLobby();
-                // display error message
+                NotificationManager.RequestNotification("Could not connect to lobby, try again!");
                 return;
             }
         }
