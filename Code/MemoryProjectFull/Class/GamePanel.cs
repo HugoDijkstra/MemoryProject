@@ -10,11 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-<<<<<<< HEAD
 using System.Windows.Input;
-=======
-using MemoryProjectFull.Class;
->>>>>>> 795c5b86908a42ac16704b9f2e41a56077154c90
 
 namespace MemoryProjectFull
 {
