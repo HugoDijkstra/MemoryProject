@@ -1,4 +1,5 @@
 ﻿using MemoryProjectFull;
+using MemoryProjectFull.Class;
 using NewMemoryGame;
 using System;
 using System.Collections.Generic;
