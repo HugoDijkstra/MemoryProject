@@ -1,4 +1,5 @@
 ﻿using MemoryProjectFull;
+using MemoryProjectFull.Class;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,15 +86,12 @@ namespace NewMemoryGame{
                 //AudioManager.GetAudio("card_fail").Play(false);
             }
 
-            Console.WriteLine("NEXT TUNR!!!!");
             if (int.Parse(_data[0]) == NetworkHandler.getInstance().networkID){
                 gamepanel.Activate();
                 gamepanel.onClickDone += new EventHandler<GamePanel.OnClickDoneArgs>(EndTurn);
-                Console.WriteLine("YOU CAN MOVE!");
             } else {
                 gamepanel.Deactivate();
                 gamepanel.onClickDone -= new EventHandler<GamePanel.OnClickDoneArgs>(EndTurn);
-                Console.WriteLine("YOU CAN'T MOVE!");
             } 
         }
 
@@ -103,7 +101,6 @@ namespace NewMemoryGame{
         /// <param name="_sender"></param>
         /// <param name="_onClickDoneArgs"></param>
         private void EndTurn(Object _sender, GamePanel.OnClickDoneArgs _onClickDoneArgs){
-            Console.WriteLine("END TUNR!!!!");
 
             string userID = players.Find(x => x.ID == NetworkHandler.getInstance().networkID).nextID.ToString();
             string correct = _onClickDoneArgs.Correct ? "1" : "0";
