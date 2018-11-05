@@ -64,6 +64,9 @@ namespace NewMemoryGame{
             if (_data[1] == "1")
             {
                 //AudioManager.GetAudio("card_done").Play(false);
+
+                int cardId = _data.Length >= 6 ? int.Parse(_data[_data.Length - 1]) : int.Parse(_data[2]);                 
+
                 gamepanel.RemoveCard(int.Parse(_data[2]));
 
                 for (int i = 0; i < players.Count; i++)
