@@ -33,7 +33,7 @@ namespace MemoryProjectFull
             }
             catch (Exception)
             {
-                throw;
+                return;
             }
             
         }

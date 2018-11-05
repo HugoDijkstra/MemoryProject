@@ -102,7 +102,7 @@ namespace NewMemoryGame{
         /// <param name="_onClickDoneArgs"></param>
         private void EndTurn(Object _sender, GamePanel.OnClickDoneArgs _onClickDoneArgs){
 
-            string userID = players.Find(x => x.ID == NetworkHandler.getInstance().networkID).nextID.ToString();
+            string userID = _onClickDoneArgs.Correct ? NetworkHandler.getInstance().networkID.ToString() : players.Find(x => x.ID == NetworkHandler.getInstance().networkID).nextID.ToString();
             string correct = _onClickDoneArgs.Correct ? "1" : "0";
             string cardID = _onClickDoneArgs.firstCard.ID.ToString();
 

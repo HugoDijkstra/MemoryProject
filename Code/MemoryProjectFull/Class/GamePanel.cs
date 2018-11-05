@@ -115,15 +115,6 @@ namespace MemoryProjectFull
 
         ~GamePanel(){
             Card.callback = null;
-            this.Children.Remove(escMenu);
-            MainWindow.WINDOW.KeyDown -= new KeyEventHandler((z, e) => {
-                if (e.Key == Key.Escape){
-                    if (escMenu.IsShown)
-                        escMenu.Hide();
-                    else
-                        escMenu.Show();
-                }
-            });
         }
 
         /// <summary>
