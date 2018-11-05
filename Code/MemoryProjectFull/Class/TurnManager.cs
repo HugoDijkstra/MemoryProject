@@ -63,11 +63,8 @@ namespace NewMemoryGame{
             // on correct card
             if (_data[1] == "1")
             {
-                //AudioManager.GetAudio("card_done").Play(false);
-
-                int cardId = _data.Length >= 6 ? int.Parse(_data[_data.Length - 1]) : int.Parse(_data[2]);                 
-
-                gamepanel.RemoveCard(int.Parse(_data[cardId]));
+                gamepanel.Dispatcher.Invoke(() => { AudioManager.GetAudio("card_done").Play(false); });
+                gamepanel.RemoveCard(int.Parse(_data[_data.Length-1]));
 
                 for (int i = 0; i < players.Count; i++)
                 {
@@ -88,7 +85,7 @@ namespace NewMemoryGame{
                 }
             }
             else {
-                //AudioManager.GetAudio("card_fail").Play(false);
+                gamepanel.Dispatcher.Invoke(() => { AudioManager.GetAudio("card_fail").Play(false); });
             }
 
             if (int.Parse(_data[0]) == NetworkHandler.getInstance().networkID){
