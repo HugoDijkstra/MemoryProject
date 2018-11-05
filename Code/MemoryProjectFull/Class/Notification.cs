@@ -144,13 +144,12 @@ namespace NotificationsWPF
 
             this.message.Trimming = TextTrimming.CharacterEllipsis;
 
-
-
-            this.Margin = new Thickness(MainWindow.SCREEN_WIDTH/2 - (this.message.Width/2 + CONTENT_X_OFFSET), OFFSET_FROM_TOP, 0, 0);
             this.HorizontalAlignment = HorizontalAlignment.Center;
 
             this.Width  = this.message.Width  + CONTENT_X_OFFSET;
             this.Height = this.message.Height + CONTENT_Y_OFFSET;
+
+            this.Margin = new Thickness((MainWindow.SCREEN_WIDTH - this.Width) / 2, OFFSET_FROM_TOP, 0, 0);
 
             this.Opacity = 0.0;
 
