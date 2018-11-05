@@ -48,13 +48,15 @@ namespace NewMemoryGame{
         /// <param name="_data">command data</param>
         private void Turn(string[] _data){
 
-            // fix turn indicator
             int id = int.Parse(_data[0]);
-            for (int i = 0; i < players.Count; i++){
-                if (players[i].ID == id){
-                    playerPanels[i].SetTurn(true);
-                    int old = i - 1 < 0 ? players.Count - 1 : i - 1;
-                    playerPanels[old].SetTurn(false);
+            // fix turn indicator
+            if (_data[1] == "0") {
+                for (int i = 0; i < players.Count; i++){
+                    if (players[i].ID == id){
+                        playerPanels[i].SetTurn(true);
+                        int old = i - 1 < 0 ? players.Count - 1 : i - 1;
+                        playerPanels[old].SetTurn(false);
+                    }
                 }
             }
 
