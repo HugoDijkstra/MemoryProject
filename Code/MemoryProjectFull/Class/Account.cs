@@ -72,7 +72,7 @@ public class Account{
     /// <param name="_callback">on login callback</param>
     /// <returns></returns>
     public static bool login(string _name, string _password, bool _autologin, Action _callback) {
-        if (MemoryDatabase.database.CheckTableExistence("users")) {
+        if (MemoryDatabase.exist() && MemoryDatabase.database.CheckTableExistence("users")) {
             if (_autologin) {
                 MainConfig.GetGroup("account").GetEntry("autologin").SetValue("1");
                 MainConfig.GetGroup("account").GetEntry("name").SetValue(_name);

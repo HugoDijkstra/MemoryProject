@@ -19,9 +19,23 @@ namespace MemoryProjectFull
         /// </summary>
         public HighscorePanel(int _width, int _height) : base(_width, _height)
         {
-            string usersString = MemoryDatabase.database.GetDataFromTable("users", "name");
-            string winsString = MemoryDatabase.database.GetDataFromTable("users", "wins");
-            string lossesString = MemoryDatabase.database.GetDataFromTable("users", "losses");
+            string usersString;
+            string winsString;
+            string lossesString;
+            if (!MemoryDatabase.exist())
+            {
+
+                usersString = "OFFLINE";
+                winsString = "0";
+                lossesString = "100";
+            }
+            else {
+
+                usersString = MemoryDatabase.database.GetDataFromTable("users", "name");
+                winsString = MemoryDatabase.database.GetDataFromTable("users", "wins");
+                lossesString = MemoryDatabase.database.GetDataFromTable("users", "losses");
+            }
+
 
             List<string> users = new List<string>(usersString.Split(','));
             List<string> wins = new List<string>(winsString.Split(','));

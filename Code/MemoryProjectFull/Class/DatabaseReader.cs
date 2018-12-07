@@ -15,6 +15,10 @@ namespace MemoryProjectFull
             reload();
         }
 
+        public static bool exist() {
+            return database != null;
+        }
+
         public static void reload() {
             try
             {
